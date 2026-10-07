@@ -37,9 +37,16 @@ variable "team_image" {
 }
 
 variable "onesignal_app_id" {
-  description = "OneSignal app id (public). The REST API keys go into the `onesignal-api-key-<env>` secrets after the first apply."
+  description = "OneSignal app id (public). Optional: leave empty to run without push notifications."
   type        = string
   default     = ""
+}
+
+variable "onesignal_api_key" {
+  description = "OneSignal REST API key (a vendor secret, stored in Secret Manager and Terraform state). Optional: when empty, nothing is mounted and the API logs pushes instead of sending them."
+  type        = string
+  default     = ""
+  sensitive   = true
 }
 
 variable "cors_origins" {

@@ -11,7 +11,7 @@ yet** (`terraform validate` passes): run `terraform plan` first and read it.
 | Firestore `(default)` | the team server's state |
 | Firebase project, web app, Hosting site `<slug>-design` | sign-in config for the app and the design site |
 | Cloud Storage `<project>-<slug>-ota-<env>` | uploads, OTA bundles, remote assets per environment (private, signed URLs) |
-| Secret Manager | `database-url-<env>`, `ota-script-token-<env>`, `onesignal-api-key-<env>` (you add the OneSignal values), `team-webhook-secret` |
+| Secret Manager | `database-url-<env>`, `ota-script-token-<env>`, `onesignal-api-key-<env>` (only when `onesignal_api_key` is set), `team-webhook-secret` |
 | Artifact Registry `images` | `api` and `team` images |
 | Cloud Scheduler | `/internal/cron/chat-retention` per API environment, OIDC with its own service account |
 | Workload Identity Federation | keyless CI: see below |
@@ -53,7 +53,7 @@ Then, once:
 5. First images (CI does this later): `bash scripts/ship/deploy-service.sh team`, `api-staging`, `api-prod`.
 6. `bash scripts/ship/deploy-design.sh` for the first design site deploy.
 7. `bash scripts/ship/protect-branches.sh <owner/repo>`.
-8. OneSignal keys: `printf '%s' "$KEY" | gcloud secrets versions add onesignal-api-key-prod --data-file=-` (and `-staging`).
+8. Push notifications (optional): set `onesignal_app_id` and `onesignal_api_key` in `my.tfvars` and apply again. Without them the APIs run and log pushes instead of sending.
 
 ## Cost notes
 

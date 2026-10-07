@@ -151,15 +151,27 @@ resource "google_secret_manager_secret_version" "ota_script_token" {
   secret_data = random_password.ota_token[each.key].result
 }
 
-# The OneSignal REST API key is a vendor secret: add the first version yourself
-#   printf '%s' "$KEY" | gcloud secrets versions add onesignal-api-key-prod --data-file=-
+# Push notifications are optional. The OneSignal REST API key is a vendor secret: set `onesignal_api_key` (sensitive) and
+# both environments get it; leave it empty and the services start without it (the API then logs pushes instead of sending
+# them). Cloud Run refuses a secret reference without a version, so nothing is created or mounted while it is empty.
+locals {
+  # Only whether a key was given is derived from the sensitive value, never the key itself.
+  onesignal = nonsensitive(var.onesignal_api_key != "") ? local.envs : {}
+}
+
 resource "google_secret_manager_secret" "onesignal_api_key" {
-  for_each  = local.envs
+  for_each  = local.onesignal
   secret_id = "onesignal-api-key-${each.key}"
   replication {
     auto {}
   }
   depends_on = [google_project_service.enabled]
+}
+
+resource "google_secret_manager_secret_version" "onesignal_api_key" {
+  for_each    = local.onesignal
+  secret      = google_secret_manager_secret.onesignal_api_key[each.key].id
+  secret_data = var.onesignal_api_key
 }
 
 /* ───────────── Runtime identities (least privilege, one per environment) ───────────── */
@@ -203,14 +215,21 @@ resource "google_service_account_iam_member" "api_signs_as_itself" {
 # An environment reads only its own secrets: a compromised staging service cannot read production credentials.
 resource "google_secret_manager_secret_iam_member" "api_reads" {
   for_each = {
-    for p in setproduct(keys(local.envs), ["database_url", "ota_script_token", "onesignal_api_key"]) : "${p[0]}/${p[1]}" => {
+    for p in setproduct(keys(local.envs), ["database_url", "ota_script_token"]) : "${p[0]}/${p[1]}" => {
       env    = p[0]
-      secret = p[1] == "database_url" ? google_secret_manager_secret.database_url[p[0]].id : p[1] == "ota_script_token" ? google_secret_manager_secret.ota_script_token[p[0]].id : google_secret_manager_secret.onesignal_api_key[p[0]].id
+      secret = p[1] == "database_url" ? google_secret_manager_secret.database_url[p[0]].id : google_secret_manager_secret.ota_script_token[p[0]].id
     }
   }
   secret_id = each.value.secret
   role      = "roles/secretmanager.secretAccessor"
   member    = "serviceAccount:${google_service_account.api[each.value.env].email}"
+}
+
+resource "google_secret_manager_secret_iam_member" "onesignal_reads" {
+  for_each  = local.onesignal
+  secret_id = google_secret_manager_secret.onesignal_api_key[each.key].id
+  role      = "roles/secretmanager.secretAccessor"
+  member    = "serviceAccount:${google_service_account.api[each.key].email}"
 }
 
 /* ───────────── Cloud Run: the API, staging and prod (REST + WebSocket chat) ───────────── */
@@ -309,12 +328,15 @@ resource "google_cloud_run_v2_service" "api" {
           }
         }
       }
-      env {
-        name = "ONESIGNAL_API_KEY"
-        value_source {
-          secret_key_ref {
-            secret  = google_secret_manager_secret.onesignal_api_key[each.key].secret_id
-            version = "latest"
+      dynamic "env" {
+        for_each = contains(keys(local.onesignal), each.key) ? [1] : []
+        content {
+          name = "ONESIGNAL_API_KEY"
+          value_source {
+            secret_key_ref {
+              secret  = google_secret_manager_secret.onesignal_api_key[each.key].secret_id
+              version = "latest"
+            }
           }
         }
       }
@@ -340,6 +362,8 @@ resource "google_cloud_run_v2_service" "api" {
     google_secret_manager_secret_iam_member.api_reads,
     google_secret_manager_secret_version.database_url,
     google_secret_manager_secret_version.ota_script_token,
+    google_secret_manager_secret_version.onesignal_api_key,
+    google_secret_manager_secret_iam_member.onesignal_reads,
     google_sql_user.env,
     google_sql_database.env,
   ]
