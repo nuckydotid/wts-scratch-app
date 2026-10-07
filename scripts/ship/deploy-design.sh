@@ -31,8 +31,13 @@ export EXPO_PUBLIC_BUILD_SHA="${EXPO_PUBLIC_BUILD_SHA:-${GITHUB_SHA:-$(git -C "$
 echo "→ exporting the design site"
 (cd "$ROOT/packages/worktrees-studio-ds" && bunx expo export --platform web --output-dir dist-web)
 
-echo "→ making sure the hosting site '$SITE' exists"
-firebase hosting:sites:create "$SITE" --project "$PROJECT" >/dev/null 2>&1 || true
+# Terraform (infra/terraform/firebase.tf) normally creates the site; only create it when it is really missing, and show
+# errors instead of hiding them (a silent retry loop or prompt looks exactly like a hang).
+echo "→ checking the hosting site '$SITE'"
+if ! firebase hosting:sites:get "$SITE" --project "$PROJECT" >/dev/null 2>&1; then
+  echo "  not found, creating it"
+  firebase hosting:sites:create "$SITE" --project "$PROJECT"
+fi
 firebase target:apply hosting design "$SITE" --project "$PROJECT" >/dev/null
 
 emit() { echo "$1=$2"; [ -z "${GITHUB_OUTPUT:-}" ] || echo "url=$2" >> "$GITHUB_OUTPUT"; }
