@@ -1,0 +1,20 @@
+{
+  "name": "worktrees-studio-asset-cache",
+  "version": "0.1.0",
+  "description": "Local asset cache — downloads assets to disk on first launch, serves from local file:// thereafter",
+  "main": "src/index.ts",
+  "types": "src/index.ts",
+  "license": "MIT",
+  "scripts": {
+    "lint": "eslint ."
+  },
+  "dependencies": {
+    "worktrees-studio-mmkv": "workspace:*"
+  },
+  "peerDependencies": {
+    "expo": "*",
+    "expo-file-system": "*",
+    "react": "*",
+    "react-native": "*"
+  }
+}

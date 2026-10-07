@@ -1,0 +1,9 @@
+{
+  "platforms": ["apple", "android"],
+  "apple": {
+    "modules": ["WorktreesStudioMmkvModule"]
+  },
+  "android": {
+    "modules": ["expo.modules.worktreesstudiommkv.WorktreesStudioMmkvModule"]
+  }
+}

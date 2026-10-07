@@ -1,0 +1,60 @@
+{
+  "name": "expo-monorepo",
+  "private": true,
+  "packageManager": "bun@1.4.2",
+  "workspaces": [
+    "apps/*",
+    "packages/*",
+    "modules/*",
+    "flows/*",
+    "backend",
+    "team-server"
+  ],
+  "scripts": {
+    "setup": "bun scripts/apply-project-config.ts",
+    "start": "bun --filter app start",
+    "web": "bun --filter app web",
+    "stories": "bun --filter @repo/worktrees-studio-ds start:web",
+    "dev:api": "bun --filter backend dev",
+    "dev:team": "bun --filter team-server dev",
+    "typecheck": "bun --filter './apps/*' --filter './packages/*' --filter './flows/*' --filter backend --filter team-server typecheck && tsc --noEmit -p modules/tsconfig.json",
+    "test": "bun --filter './apps/*' --filter './packages/*' --filter './flows/*' --filter backend --filter team-server test",
+    "format": "prettier --write '**/*.{ts,tsx,json,css}'",
+    "format:check": "prettier --check '**/*.{ts,tsx,json,css}'",
+    "commands:validate": "bun scripts/validate-commands.ts",
+    "prepare": "husky && bun scripts/link-workspace-deps.ts",
+    "ota:publish": "bun scripts/ota/publish.ts",
+    "ota:status": "bun scripts/ota/status.ts",
+    "flows": "bun --filter worktrees-studio-flows start:web",
+    "check:deps": "bun flows/worktrees-studio/scripts/check-dependency-versions.ts",
+    "sonar:check": "bun scripts/sync-sonar-rules.cjs --check",
+    "sonar:test": "bun test plugins/local-sonar/tests/"
+  },
+  "lint-staged": {
+    "*.{ts,tsx,js,jsx}": [
+      "prettier --write"
+    ],
+    "*.{json,md,css}": [
+      "prettier --write"
+    ]
+  },
+  "devDependencies": {
+    "@commitlint/cli": "^21.2.1",
+    "@commitlint/config-conventional": "^21.2.0",
+    "@expo/config-plugins": "57.0.6",
+    "@types/archiver": "^6.0.3",
+    "@types/bun": "^1.4.2",
+    "archiver": "^7.0.1",
+    "husky": "^9.1.7",
+    "lint-staged": "^17.2.0",
+    "prettier": "^3.9.8",
+    "typescript": "~6.0.3",
+    "yaml": "^2.4.2"
+  },
+  "overrides": {
+    "react-dom": "19.2.3"
+  },
+  "patchedDependencies": {
+    "heroui-native@1.0.7": "patches/heroui-native@1.0.7.patch"
+  }
+}

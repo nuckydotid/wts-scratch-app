@@ -1,0 +1,204 @@
+/*
+ * Shared static token theme for native consumers.
+ *
+ * Uniwind useCSSVariable / HeroUI useThemeColor: variables must appear in @theme static
+ * or in a className. @theme inline static from HeroUI does not register for the hook.
+ * https://docs.uniwind.dev/api/use-css-variable
+ *
+ * Import this from an app's css entry (e.g. `@import "@repo/worktrees-studio-ds/styles";`)
+ * after `@import "heroui-native/styles"`.
+ */
+@layer theme {
+  :root {
+    @variant light {
+      --accent: #079789;
+      --accent-foreground: var(--snow);
+      --focus: var(--accent);
+    }
+
+    @variant dark {
+      --accent: #079789;
+      --accent-foreground: var(--snow);
+      --focus: var(--accent);
+    }
+  }
+}
+
+@theme static {
+  /* Active library theme (heroui-native useLibraryTheme). Registered here so
+   * the variable is always emitted — it lives in a plain @theme block in
+   * heroui-native's variables.css and would otherwise be tree-shaken,
+   * leaving useCSSVariable("--theme") unresolved (dev warning). */
+  --theme: default;
+
+  --color-background: var(--background);
+  --color-foreground: var(--foreground);
+
+  --color-surface: var(--surface);
+  --color-surface-foreground: var(--surface-foreground);
+  --color-surface-hover: color-mix(in oklab, var(--surface) 92%, var(--surface-foreground) 8%);
+
+  --color-surface-secondary: var(--surface-secondary);
+  --color-surface-secondary-foreground: var(--surface-secondary-foreground);
+
+  --color-surface-tertiary: var(--surface-tertiary);
+  --color-surface-tertiary-foreground: var(--surface-tertiary-foreground);
+
+  --color-overlay: var(--overlay);
+  --color-overlay-foreground: var(--overlay-foreground);
+  --color-backdrop: var(--backdrop);
+
+  --color-muted: var(--muted);
+
+  --color-primary: var(--accent);
+  --color-primary-foreground: var(--accent-foreground);
+
+  --color-accent: var(--accent);
+  --color-accent-foreground: var(--accent-foreground);
+
+  --color-segment: var(--segment);
+  --color-segment-foreground: var(--segment-foreground);
+
+  --color-border: var(--border);
+  --color-separator: var(--separator);
+  --color-focus: var(--focus);
+  --color-link: var(--link);
+
+  --color-default: var(--default);
+  --color-default-foreground: var(--default-foreground);
+
+  --color-success: var(--success);
+  --color-success-foreground: var(--success-foreground);
+
+  --color-warning: var(--warning);
+  --color-warning-foreground: var(--warning-foreground);
+
+  --color-danger: var(--danger);
+  --color-danger-foreground: var(--danger-foreground);
+
+  --color-field: var(--field-background, var(--default));
+  --color-field-foreground: var(--field-foreground, var(--foreground));
+  --color-field-placeholder: var(--field-placeholder, var(--muted));
+  --color-field-border: var(--field-border, var(--border));
+  --radius-field: var(--field-radius, var(--radius-xl));
+  --border-width-field: var(--field-border-width, var(--border-width));
+
+  --shadow-surface: var(--surface-shadow);
+  --shadow-overlay: var(--overlay-shadow);
+  --shadow-field: var(--field-shadow);
+
+  --color-background-secondary: color-mix(in oklab, var(--background) 96%, var(--foreground) 4%);
+  --color-background-tertiary: color-mix(in oklab, var(--background) 92%, var(--foreground) 8%);
+  --color-background-inverse: var(--foreground);
+
+  --color-default-hover: color-mix(in oklab, var(--default) 96%, var(--default-foreground) 4%);
+  --color-primary-hover: color-mix(in oklab, var(--accent) 90%, var(--accent-foreground) 10%);
+  --color-accent-hover: color-mix(in oklab, var(--accent) 90%, var(--accent-foreground) 10%);
+  --color-success-hover: color-mix(in oklab, var(--success) 90%, var(--success-foreground) 10%);
+  --color-warning-hover: color-mix(in oklab, var(--warning) 90%, var(--warning-foreground) 10%);
+  --color-danger-hover: color-mix(in oklab, var(--danger) 90%, var(--danger-foreground) 10%);
+
+  --color-field-hover: color-mix(
+    in oklab,
+    var(--field-background, var(--default)) 90%,
+    var(--field-foreground, var(--foreground)) 2%
+  );
+  --color-field-focus: var(--field-background, var(--default));
+  --color-field-border-hover: color-mix(
+    in oklab,
+    var(--field-border, var(--border)) 88%,
+    var(--field-foreground, var(--foreground)) 10%
+  );
+  --color-field-border-focus: color-mix(
+    in oklab,
+    var(--field-border, var(--border)) 74%,
+    var(--field-foreground, var(--foreground)) 22%
+  );
+
+  --color-primary-soft: color-mix(in oklab, var(--accent) 15%, transparent);
+  --color-primary-soft-foreground: var(--accent);
+  --color-primary-soft-hover: color-mix(in oklab, var(--accent) 20%, transparent);
+
+  --color-accent-soft: color-mix(in oklab, var(--accent) 15%, transparent);
+  --color-accent-soft-foreground: var(--accent);
+  --color-accent-soft-hover: color-mix(in oklab, var(--accent) 20%, transparent);
+
+  --color-danger-soft: color-mix(in oklab, var(--danger) 15%, transparent);
+  --color-danger-soft-foreground: var(--danger);
+  --color-danger-soft-hover: color-mix(in oklab, var(--danger) 20%, transparent);
+
+  --color-warning-soft: color-mix(in oklab, var(--warning) 15%, transparent);
+  --color-warning-soft-foreground: var(--warning);
+  --color-warning-soft-hover: color-mix(in oklab, var(--warning) 20%, transparent);
+
+  --color-success-soft: color-mix(in oklab, var(--success) 15%, transparent);
+  --color-success-soft-foreground: var(--success);
+  --color-success-soft-hover: color-mix(in oklab, var(--success) 20%, transparent);
+
+  --color-separator-secondary: color-mix(
+    in oklab,
+    var(--surface) 85%,
+    var(--surface-foreground) 15%
+  );
+  --color-separator-tertiary: color-mix(
+    in oklab,
+    var(--surface) 81%,
+    var(--surface-foreground) 19%
+  );
+
+  --color-border-secondary: color-mix(in oklab, var(--surface) 78%, var(--surface-foreground) 22%);
+  --color-border-tertiary: color-mix(in oklab, var(--surface) 66%, var(--surface-foreground) 34%);
+
+  --color-on-surface: var(--surface);
+  --color-on-surface-foreground: var(--surface-foreground);
+  --color-on-surface-hover: color-mix(in oklab, var(--surface) 92%, var(--surface-foreground) 8%);
+  --color-on-surface-focus: var(--focus);
+  --color-on-surface-secondary: var(--surface-secondary);
+  --color-on-surface-secondary-foreground: var(--surface-secondary-foreground);
+  --color-on-surface-secondary-hover: color-mix(
+    in oklab,
+    var(--surface-secondary) 92%,
+    var(--surface-secondary-foreground) 8%
+  );
+  --color-on-surface-secondary-focus: var(--focus);
+  --color-on-surface-tertiary: var(--surface-tertiary);
+  --color-on-surface-tertiary-foreground: var(--surface-tertiary-foreground);
+  --color-on-surface-tertiary-hover: color-mix(
+    in oklab,
+    var(--surface-tertiary) 92%,
+    var(--surface-tertiary-foreground) 8%
+  );
+  --color-on-surface-tertiary-focus: var(--focus);
+
+  --color-overlay-backdrop: var(--backdrop);
+
+  --radius-xs: calc(var(--radius) * 0.25);
+  --radius-sm: calc(var(--radius) * 0.5);
+  --radius-md: calc(var(--radius) * 0.75);
+  --radius-lg: calc(var(--radius) * 1);
+  --radius-xl: calc(var(--radius) * 1.5);
+  --radius-2xl: calc(var(--radius) * 2);
+  --radius-3xl: calc(var(--radius) * 3);
+  --radius-4xl: calc(var(--radius) * 4);
+}
+
+@theme {
+  --font-normal: "Poppins";
+  --font-medium: "Poppins-Medium";
+  --font-semibold: "Poppins-SemiBold";
+  --font-bold: "Poppins-Bold";
+  --font-mono: Menlo, Monaco, "Courier New", monospace;
+}
+
+/*
+ * Force-register heroui Input accent extraction (scan-independent).
+ * uniwind's TextInput resolves accentColor from these classes at runtime;
+ * the node_modules scanner misses them in some consumer builds.
+ */
+.accent-accent {
+  accent-color: var(--color-accent);
+}
+
+.accent-field-placeholder {
+  accent-color: var(--color-field-placeholder);
+}

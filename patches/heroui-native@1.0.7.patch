@@ -1,0 +1,927 @@
+diff --git a/lib/module/components/bottom-sheet/bottom-sheet.animation.js b/lib/module/components/bottom-sheet/bottom-sheet.animation.js
+deleted file mode 100644
+index 96d045cb2253c5506b4c0a585bb3c35b65fa9238..0000000000000000000000000000000000000000
+diff --git a/lib/module/components/bottom-sheet/bottom-sheet.animation.js.map b/lib/module/components/bottom-sheet/bottom-sheet.animation.js.map
+deleted file mode 100644
+index 702a7740ed19b7e518b7366c752caaf087dcc0b5..0000000000000000000000000000000000000000
+diff --git a/lib/module/components/bottom-sheet/bottom-sheet.constants.js b/lib/module/components/bottom-sheet/bottom-sheet.constants.js
+deleted file mode 100644
+index 5d499336218767f784b033b756eaf873eba0a8e6..0000000000000000000000000000000000000000
+diff --git a/lib/module/components/bottom-sheet/bottom-sheet.constants.js.map b/lib/module/components/bottom-sheet/bottom-sheet.constants.js.map
+deleted file mode 100644
+index 55a5ff7286602484f4208604ff4ecc6cc8042467..0000000000000000000000000000000000000000
+diff --git a/lib/module/components/bottom-sheet/bottom-sheet.js b/lib/module/components/bottom-sheet/bottom-sheet.js
+deleted file mode 100644
+index c72c914182b27e3a063fe3149ced59c25c9337c8..0000000000000000000000000000000000000000
+diff --git a/lib/module/components/bottom-sheet/bottom-sheet.js.map b/lib/module/components/bottom-sheet/bottom-sheet.js.map
+deleted file mode 100644
+index cf9ee290146fcea6462e2d45711c09d4318509d1..0000000000000000000000000000000000000000
+diff --git a/lib/module/components/bottom-sheet/bottom-sheet.md b/lib/module/components/bottom-sheet/bottom-sheet.md
+deleted file mode 100644
+index 537f0f4f717eef3c0ea79e9521ef6c226581c06a..0000000000000000000000000000000000000000
+diff --git a/lib/module/components/bottom-sheet/bottom-sheet.styles.js b/lib/module/components/bottom-sheet/bottom-sheet.styles.js
+deleted file mode 100644
+index 900db17e4043666cd26f8368970fc6ee3fa9acc1..0000000000000000000000000000000000000000
+diff --git a/lib/module/components/bottom-sheet/bottom-sheet.styles.js.map b/lib/module/components/bottom-sheet/bottom-sheet.styles.js.map
+deleted file mode 100644
+index 1fdbfc2398c8952535f1523c6b0d02178f96b1aa..0000000000000000000000000000000000000000
+diff --git a/lib/module/components/bottom-sheet/bottom-sheet.types.js b/lib/module/components/bottom-sheet/bottom-sheet.types.js
+deleted file mode 100644
+index 8e92e71f1081bbd0308162fb6884daf62441b29c..0000000000000000000000000000000000000000
+diff --git a/lib/module/components/bottom-sheet/bottom-sheet.types.js.map b/lib/module/components/bottom-sheet/bottom-sheet.types.js.map
+deleted file mode 100644
+index 0336d65f817c74a7f3c9fa7d822f0f16fea00ca0..0000000000000000000000000000000000000000
+diff --git a/lib/module/components/bottom-sheet/index.js b/lib/module/components/bottom-sheet/index.js
+deleted file mode 100644
+index 536bf756fb8e3aea689d021c7ea35665860c0015..0000000000000000000000000000000000000000
+diff --git a/lib/module/components/bottom-sheet/index.js.map b/lib/module/components/bottom-sheet/index.js.map
+deleted file mode 100644
+index 5f63408d9a42fd6fe4ac51344b2954c6bb199d55..0000000000000000000000000000000000000000
+diff --git a/lib/module/components/button/button.js b/lib/module/components/button/button.js
+index 4645bcd2cf81fac7f28327cfa0e478a31aad00d8..62f4542462e7536933da76576462253607c91282 100644
+--- a/lib/module/components/button/button.js
++++ b/lib/module/components/button/button.js
+@@ -84,9 +84,9 @@ const ButtonRoot = /*#__PURE__*/forwardRef((props, ref) => {
+       case 'tertiary':
+         return hasDefaultThemeBackground ? colorKit.setAlpha(themeColorDefaultHover, 0.2).hex() : themeColorDefaultHover;
+       case 'outline':
+-        return colorKit.setAlpha(themeColorDefaultHover, hasDefaultThemeBackground ? 0.05 : 0.3).hex();
++        return themeColorDefaultHover && themeColorDefaultHover !== 'invalid' ? colorKit.setAlpha(themeColorDefaultHover, hasDefaultThemeBackground ? 0.05 : 0.3).hex() : 'transparent';
+       case 'ghost':
+-        return colorKit.setAlpha(themeColorDefaultHover, hasDefaultThemeBackground ? 0.05 : 0.3).hex();
++        return themeColorDefaultHover && themeColorDefaultHover !== 'invalid' ? colorKit.setAlpha(themeColorDefaultHover, hasDefaultThemeBackground ? 0.05 : 0.3).hex() : 'transparent';
+       case 'danger':
+         return themeColorDangerHover;
+       case 'danger-soft':
+diff --git a/lib/module/components/input/input.js b/lib/module/components/input/input.js
+index 332f5caab14ce5dbde96154b7ff38e6b17dc91d9..61a7d16feb8d642f2eceba80b157a6218dbee097 100644
+--- a/lib/module/components/input/input.js
++++ b/lib/module/components/input/input.js
+@@ -2,7 +2,7 @@
+ 
+ import { forwardRef } from 'react';
+ import { View } from 'react-native';
+-import { useIsOnSurface } from "../../helpers/external/hooks/index.js";
++import { useIsOnSurface, useThemeColor } from "../../helpers/external/hooks/index.js";
+ import { cn } from "../../helpers/external/utils/index.js";
+ import { HeroTextInput, ThemeBackground, useHasDefaultThemeBackground } from "../../helpers/internal/components/index.js";
+ import { useFormField } from "../../helpers/internal/contexts/index.js";
+@@ -45,8 +45,8 @@ const InputRoot = /*#__PURE__*/forwardRef((props, ref) => {
+     containerClassName: containerClassNameProp,
+     background,
+     style,
+-    selectionColorClassName: selectionColorClassNameProp,
+-    placeholderColorClassName: placeholderColorClassNameProp,
++    selectionColorClassName: _selectionColorClassName,
++    placeholderColorClassName: _placeholderColorClassName,
+     ...restProps
+   } = props;
+   const formField = useFormField();
+@@ -83,19 +83,18 @@ const InputRoot = /*#__PURE__*/forwardRef((props, ref) => {
+      */
+     className: hasBackgroundLayer ? className : cn(containerClassName, className)
+   });
+-  const placeholderColorClassName = inputClassNames.placeholderTextColor({
+-    className: placeholderColorClassNameProp
+-  });
+-  const selectionColorClassName = inputClassNames.inputSelectionColor({
+-    isInvalid,
+-    className: selectionColorClassNameProp
+-  });
++  // Theme colors via useThemeColor (the `accent-*` className extractor does
++  // not resolve custom semantic tokens, which also logs a one-time Uniwind
++  // warning). selectionColor/placeholderTextColor are native TextInput props
++  // that HeroTextInput passes through.
++  const placeholderTextColor = useThemeColor('field-placeholder');
++  const selectionColor = useThemeColor(isInvalid ? 'danger' : 'accent');
+   const textInput = /*#__PURE__*/_jsx(HeroTextInput, {
+     ref: ref,
+     className: inputClassName,
+     style: [inputStyleSheet.borderCurve, style],
+-    placeholderTextColorClassName: placeholderColorClassName,
+-    selectionColorClassName: selectionColorClassName,
++    placeholderTextColor: placeholderTextColor,
++    selectionColor: selectionColor,
+     editable: !isDisabled,
+     ...restProps
+   });
+diff --git a/lib/module/components/skeleton/skeleton.animation.js b/lib/module/components/skeleton/skeleton.animation.js
+index 4955f29ac02b9378869d1f0dc53526df7548c5b0..5cf90b822645f6137fe686ec38c11880a55705f9 100644
+--- a/lib/module/components/skeleton/skeleton.animation.js
++++ b/lib/module/components/skeleton/skeleton.animation.js
+@@ -173,7 +173,7 @@ export function useSkeletonShimmerAnimation(options) {
+ 
+   // Calculate default highlight color based on theme
+   const defaultHighlightColor = useMemo(() => {
+-    return theme === 'dark' ? colorKit.setAlpha(colorKit.increaseBrightness(themeColorBackground, 10).hex(), 0.1).hex() : colorKit.setAlpha(colorKit.decreaseBrightness(themeColorBackground, 10).hex(), 0.75).hex();
++    return theme === 'dark' ? colorKit.setAlpha(colorKit.increaseBrightness(themeColorBackground, 40).hex(), 0.2).hex() : colorKit.setAlpha(colorKit.decreaseBrightness(themeColorBackground, 10).hex(), 0.75).hex();
+   }, [theme, themeColorBackground]);
+   const shimmerHighlightColor = animationConfig?.highlightColor ?? defaultHighlightColor;
+   const gradientColors = useMemo(() => ['transparent', shimmerHighlightColor, 'transparent'], [shimmerHighlightColor]);
+diff --git a/lib/module/helpers/external/hooks/index.js b/lib/module/helpers/external/hooks/index.js
+index 69e9b41aea6582a3a6df83facbba01cc9b585e00..0a30c20445d60efd499d2c912e804bcc152adf4d 100644
+--- a/lib/module/helpers/external/hooks/index.js
++++ b/lib/module/helpers/external/hooks/index.js
+@@ -3,7 +3,6 @@
+ export { useTextComponent } from "../../../providers/text-component/index.js";
+ export { useTextInputComponent } from "../../../providers/text-input-component/index.js";
+ export * from "../../internal/hooks/use-combined-animation-disabled-state.js";
+-export * from "./use-bottom-sheet-aware-handlers.js";
+ export * from "./use-is-on-surface.js";
+ export * from "./use-theme-color.js";
+ //# sourceMappingURL=index.js.map
+diff --git a/lib/module/helpers/external/hooks/use-bottom-sheet-aware-handlers.js b/lib/module/helpers/external/hooks/use-bottom-sheet-aware-handlers.js
+deleted file mode 100644
+index 8526976b386f720ea4380310d104e2f032abc18f..0000000000000000000000000000000000000000
+diff --git a/lib/module/helpers/external/hooks/use-bottom-sheet-aware-handlers.js.map b/lib/module/helpers/external/hooks/use-bottom-sheet-aware-handlers.js.map
+deleted file mode 100644
+index a8df5b312b89557fc1f014d35f17c9bee4298a78..0000000000000000000000000000000000000000
+diff --git a/lib/module/helpers/external/utils/color-kit/index.js b/lib/module/helpers/external/utils/color-kit/index.js
+index 0ef599d6426f0682eff4afab7840f454ab68aaec..91c735c8160ec8f2bcab8151815fd65407515357 100644
+--- a/lib/module/helpers/external/utils/color-kit/index.js
++++ b/lib/module/helpers/external/utils/color-kit/index.js
+@@ -1167,6 +1167,10 @@ export const colorKitUI = () => {
+ 
+   /** - Convert `HSL`, `HSV`, `HWB`, or `HEX` color to the `RGB` color format. */
+   const RGB = color => {
++    // Guard: handle falsy or invalid inputs silently
++    if (!color || color === 'invalid') {
++      return RGB_types({ r: 0, g: 0, b: 0, a: 1 });
++    }
+     // named color
+     if (typeof color === 'string') {
+       color = color.trim().toLowerCase();
+@@ -1206,8 +1210,7 @@ export const colorKitUI = () => {
+       return RGB_types(rgba);
+     }
+ 
+-    // ! error
+-    console.error('[colorKit.RGB] An error occurred while attempting to convert the provided parameter into an `RGB` color. As a result, the default color "black" will be used instead.');
++    // ! error — silently fall back to black
+     return RGB_types({
+       r: 0,
+       g: 0,
+diff --git a/lib/module/helpers/internal/components/bottom-sheet-content-container.js b/lib/module/helpers/internal/components/bottom-sheet-content-container.js
+deleted file mode 100644
+index f9ea035e3b30eafe5eb281e8c0b9aae8149d9daf..0000000000000000000000000000000000000000
+diff --git a/lib/module/helpers/internal/components/bottom-sheet-content-container.js.map b/lib/module/helpers/internal/components/bottom-sheet-content-container.js.map
+deleted file mode 100644
+index 3fc1bb135c5d84bb2d76cb5cbefec49fc42d7863..0000000000000000000000000000000000000000
+diff --git a/lib/module/helpers/internal/components/bottom-sheet-content.js b/lib/module/helpers/internal/components/bottom-sheet-content.js
+deleted file mode 100644
+index 79bf83c3fd3100fe89947af5d5714c556cc29514..0000000000000000000000000000000000000000
+diff --git a/lib/module/helpers/internal/components/bottom-sheet-content.js.map b/lib/module/helpers/internal/components/bottom-sheet-content.js.map
+deleted file mode 100644
+index d16afdb4731602139cd02b38ccb074e3cde5fb4e..0000000000000000000000000000000000000000
+diff --git a/lib/module/helpers/internal/components/index.js b/lib/module/helpers/internal/components/index.js
+index e0a526143623733a84922efcb7cf719f362c9a91..ca01f213daae12246fd4c22c48abd2aeab7c5fb8 100644
+--- a/lib/module/helpers/internal/components/index.js
++++ b/lib/module/helpers/internal/components/index.js
+@@ -1,8 +1,6 @@
+ "use strict";
+ 
+ export * from "./animated-check-icon.js";
+-export * from "./bottom-sheet-content.js";
+-export * from "./bottom-sheet-content-container.js";
+ export * from "./check-icon.js";
+ export * from "./chevron-down-icon.js";
+ export * from "./chevron-right-icon.js";
+diff --git a/lib/module/helpers/internal/contexts/bottom-sheet-is-dragging-context.js b/lib/module/helpers/internal/contexts/bottom-sheet-is-dragging-context.js
+deleted file mode 100644
+index 825d2cd17d4c543362d281725c06e2a167efda55..0000000000000000000000000000000000000000
+diff --git a/lib/module/helpers/internal/contexts/bottom-sheet-is-dragging-context.js.map b/lib/module/helpers/internal/contexts/bottom-sheet-is-dragging-context.js.map
+deleted file mode 100644
+index 6466de3f581791bba832070d19da59fc911ca8ec..0000000000000000000000000000000000000000
+diff --git a/lib/module/helpers/internal/contexts/index.js b/lib/module/helpers/internal/contexts/index.js
+index 25d1e6681107002b4e024fa0ef577dfa0090f67a..5d8947f95047069b1aa81c0f09dae03874ecf8e8 100644
+--- a/lib/module/helpers/internal/contexts/index.js
++++ b/lib/module/helpers/internal/contexts/index.js
+@@ -1,6 +1,5 @@
+ "use strict";
+ 
+ export * from "./animation-settings-context.js";
+-export * from "./bottom-sheet-is-dragging-context.js";
+ export * from "./form-field-context.js";
+ //# sourceMappingURL=index.js.map
+diff --git a/lib/module/helpers/internal/hooks/index.js b/lib/module/helpers/internal/hooks/index.js
+index e63d8a3bd512052f2b9fc2af18c6f497d1695e7f..65ccd631d67c84ed872bf1311d5bfcfd6a11ab8c 100644
+--- a/lib/module/helpers/internal/hooks/index.js
++++ b/lib/module/helpers/internal/hooks/index.js
+@@ -1,13 +1,11 @@
+ "use strict";
+ 
+ export * from "./use-augmented-ref.js";
+-export * from "./use-bottom-sheet-gesture-handlers.js";
+ export * from "./use-combined-animation-disabled-state.js";
+ export * from "./use-controllable-state.js";
+ export * from "./use-dev-info.js";
+ export * from "./use-keyboard-status.js";
+ export * from "./use-library-theme.js";
+-export * from "./use-popup-bottom-sheet-content-animation.js";
+ export * from "./use-popup-dialog-content-animation.js";
+ export * from "./use-popup-overlay-animation.js";
+ export * from "./use-popup-overlay-variant.js";
+diff --git a/lib/module/helpers/internal/hooks/use-bottom-sheet-gesture-handlers.js b/lib/module/helpers/internal/hooks/use-bottom-sheet-gesture-handlers.js
+deleted file mode 100644
+index 86ded0f7d0efa368ec08025410e2ad4fb189c6c7..0000000000000000000000000000000000000000
+diff --git a/lib/module/helpers/internal/hooks/use-bottom-sheet-gesture-handlers.js.map b/lib/module/helpers/internal/hooks/use-bottom-sheet-gesture-handlers.js.map
+deleted file mode 100644
+index 81a9fed111d58477370b7c40fcbc457d965cd88e..0000000000000000000000000000000000000000
+diff --git a/lib/module/helpers/internal/hooks/use-popup-bottom-sheet-content-animation.js b/lib/module/helpers/internal/hooks/use-popup-bottom-sheet-content-animation.js
+deleted file mode 100644
+index 47a003019a8007a2a05a10dc713f838a46edaff0..0000000000000000000000000000000000000000
+diff --git a/lib/module/helpers/internal/hooks/use-popup-bottom-sheet-content-animation.js.map b/lib/module/helpers/internal/hooks/use-popup-bottom-sheet-content-animation.js.map
+deleted file mode 100644
+index ef72d3273b012077b4f39a981ffd7f98dbc5015e..0000000000000000000000000000000000000000
+diff --git a/lib/module/helpers/internal/types/bottom-sheet.js b/lib/module/helpers/internal/types/bottom-sheet.js
+deleted file mode 100644
+index 50a821a35cb2b09dc58cb0f4ca8f8ea2e7776a5c..0000000000000000000000000000000000000000
+diff --git a/lib/module/helpers/internal/types/bottom-sheet.js.map b/lib/module/helpers/internal/types/bottom-sheet.js.map
+deleted file mode 100644
+index ee19e0bb47e76997d88c5da572b42592d88678cf..0000000000000000000000000000000000000000
+diff --git a/lib/module/helpers/internal/types/index.js b/lib/module/helpers/internal/types/index.js
+index df9ed60bd48d1f31d30b708dab5be3b7cd34bbeb..ec7c06839ec4f83be988a3ca42337abef3d6eda3 100644
+--- a/lib/module/helpers/internal/types/index.js
++++ b/lib/module/helpers/internal/types/index.js
+@@ -1,7 +1,6 @@
+ "use strict";
+ 
+ export * from "./animation.js";
+-export * from "./bottom-sheet.js";
+ export * from "./misc.js";
+ export * from "./overlay.js";
+ export * from "./primitives.js";
+diff --git a/lib/module/index.js b/lib/module/index.js
+index f16d894ab9370f79ed7045ca74351fdf87cd5fd3..99679c615ce91fe5a1f33ac542ce07c6bbad1864 100644
+--- a/lib/module/index.js
++++ b/lib/module/index.js
+@@ -4,7 +4,6 @@
+ export * from "./components/accordion/index.js";
+ export * from "./components/alert/index.js";
+ export * from "./components/avatar/index.js";
+-export * from "./components/bottom-sheet/index.js";
+ export * from "./components/button/index.js";
+ export * from "./components/card/index.js";
+ export * from "./components/checkbox/index.js";
+diff --git a/lib/module/optional/gorhom-bottom-sheet.js b/lib/module/optional/gorhom-bottom-sheet.js
+deleted file mode 100644
+index 5cee7dd7039a1f0018a10669e59fabd224adf980..0000000000000000000000000000000000000000
+diff --git a/lib/module/optional/gorhom-bottom-sheet.js.map b/lib/module/optional/gorhom-bottom-sheet.js.map
+deleted file mode 100644
+index a2ea94487b469d47cc3abbca7ecf656db63ca1f7..0000000000000000000000000000000000000000
+diff --git a/lib/module/primitives/bottom-sheet/bottom-sheet.js b/lib/module/primitives/bottom-sheet/bottom-sheet.js
+deleted file mode 100644
+index e46ca8bacf5642fd71e88ebd8968fb45f9a74613..0000000000000000000000000000000000000000
+diff --git a/lib/module/primitives/bottom-sheet/bottom-sheet.js.map b/lib/module/primitives/bottom-sheet/bottom-sheet.js.map
+deleted file mode 100644
+index 6bc6c5dbe0b5126c33cf5f19f6375665fdf9f648..0000000000000000000000000000000000000000
+diff --git a/lib/module/primitives/bottom-sheet/bottom-sheet.types.js b/lib/module/primitives/bottom-sheet/bottom-sheet.types.js
+deleted file mode 100644
+index 8e92e71f1081bbd0308162fb6884daf62441b29c..0000000000000000000000000000000000000000
+diff --git a/lib/module/primitives/bottom-sheet/bottom-sheet.types.js.map b/lib/module/primitives/bottom-sheet/bottom-sheet.types.js.map
+deleted file mode 100644
+index 3216521c8f736133f3b8f66e0a9f87f0e28b0398..0000000000000000000000000000000000000000
+diff --git a/lib/module/primitives/bottom-sheet/index.js b/lib/module/primitives/bottom-sheet/index.js
+deleted file mode 100644
+index 6d0d9622c44f8ce4b2827632b20ecdf951fbc99c..0000000000000000000000000000000000000000
+diff --git a/lib/module/primitives/bottom-sheet/index.js.map b/lib/module/primitives/bottom-sheet/index.js.map
+deleted file mode 100644
+index 39d6f196f0f17a39f9b5228d7c9b008185a33800..0000000000000000000000000000000000000000
+diff --git a/lib/module/primitives/portal/portal.js b/lib/module/primitives/portal/portal.js
+index 5cdad93568c72b7d17bae23ec308c9869b6ff209..1b5c0c1cdada499311aaf16b7ebf54cf73d3dfce 100644
+--- a/lib/module/primitives/portal/portal.js
++++ b/lib/module/primitives/portal/portal.js
+@@ -1,113 +1,6 @@
+ "use strict";
+ 
+-import * as React from 'react';
+-import { useEffect, useSyncExternalStore } from 'react';
+-import { Platform } from 'react-native';
+-import { jsx as _jsx, Fragment as _Fragment } from "react/jsx-runtime";
+-const DEFAULT_PORTAL_HOST = 'HEROUI_NATIVE_DEFAULT_HOST_NAME';
+-const store = {
+-  map: new Map().set(DEFAULT_PORTAL_HOST, new Map()),
+-  listeners: new Set()
+-};
+-
+-// --------------------------------------------------
+-
+-function emit() {
+-  for (const cb of store.listeners) cb();
+-}
+-function getSnapshot() {
+-  return store.map;
+-}
+-function subscribe(cb) {
+-  store.listeners.add(cb);
+-  return () => {
+-    store.listeners.delete(cb);
+-  };
+-}
+-function updatePortal(hostName, name, children) {
+-  const next = new Map(store.map);
+-  const portal = next.get(hostName) ?? new Map();
+-  portal.set(name, children);
+-  next.set(hostName, portal);
+-  store.map = next;
+-  emit();
+-}
+-function removePortal(hostName, name) {
+-  const next = new Map(store.map);
+-  const portal = next.get(hostName) ?? new Map();
+-  portal.delete(name);
+-  next.set(hostName, portal);
+-  store.map = next;
+-  emit();
+-}
+-
+-// --------------------------------------------------
+-
+-export function PortalHost({
+-  name = DEFAULT_PORTAL_HOST
+-}) {
+-  const map = useSyncExternalStore(subscribe, getSnapshot, getSnapshot);
+-  const portalMap = map.get(name) ?? new Map();
+-  if (portalMap.size === 0) return null;
+-  // Key each portal subtree by its unique portal name. Rendering the values
+-  // as an unkeyed array makes React reconcile portals by array index, so when
+-  // a portal unregisters (e.g. a screen with an open bottom sheet unmounts)
+-  // sibling portals shift index and inherit each other's component state,
+-  // including gorhom bottom-sheet open positions. This causes unrelated
+-  // sheets to appear open ("ghost sheets") or open sheets to stay invisible.
+-  return /*#__PURE__*/_jsx(_Fragment, {
+-    children: Array.from(portalMap.entries()).map(([portalName, portalChildren]) => /*#__PURE__*/_jsx(React.Fragment, {
+-      children: portalChildren
+-    }, portalName))
+-  });
+-}
+-
+-// --------------------------------------------------
+-
+-export function Portal({
+-  name,
+-  hostName = DEFAULT_PORTAL_HOST,
+-  children
+-}) {
+-  useEffect(() => {
+-    updatePortal(hostName, name, children);
+-  }, [hostName, name, children]);
+-  useEffect(() => {
+-    return () => {
+-      removePortal(hostName, name);
+-    };
+-  }, [hostName, name]);
+-  return null;
+-}
+-
+-// --------------------------------------------------
+-
+-const ROOT = {
+-  flex: 1
+-};
+-
+-/**
+- * @deprecated use `FullWindowOverlay` from `react-native-screens` instead
+- * @example
+-import { FullWindowOverlay } from "react-native-screens"
+-const WindowOverlay = Platform.OS === "ios" ? FullWindowOverlay : Fragment
+-// Wrap the `<PortalHost/>` with `<WindowOverlay/>`
+-<WindowOverlay><PortalHost/></WindowOverlay>
+- */
+-export function useModalPortalRoot() {
+-  const ref = React.useRef(null);
+-  const [offset, setSideOffSet] = React.useState(0);
+-  const onLayout = React.useCallback(() => {
+-    if (Platform.OS === 'web') return;
+-    ref.current?.measure((_x, _y, _width, _height, _pageX, pageY) => {
+-      setSideOffSet(-pageY);
+-    });
+-  }, []);
+-  return {
+-    ref,
+-    offset,
+-    onLayout,
+-    style: ROOT
+-  };
+-}
++export function PortalHost() { return null; }
++export function Portal() { return null; }
++export function useModalPortalRoot() { return { ref: null, offset: 0, onLayout: () => {}, style: {} }; }
+ //# sourceMappingURL=portal.js.map
+diff --git a/lib/typescript/src/components/bottom-sheet/bottom-sheet.animation.d.ts b/lib/typescript/src/components/bottom-sheet/bottom-sheet.animation.d.ts
+deleted file mode 100644
+index 430aaa968f78af6ead81de06e9b3d3295b341d52..0000000000000000000000000000000000000000
+diff --git a/lib/typescript/src/components/bottom-sheet/bottom-sheet.animation.d.ts.map b/lib/typescript/src/components/bottom-sheet/bottom-sheet.animation.d.ts.map
+deleted file mode 100644
+index ce3afc9c44ac2ff589e9f1fc6d8edb359969affe..0000000000000000000000000000000000000000
+diff --git a/lib/typescript/src/components/bottom-sheet/bottom-sheet.constants.d.ts b/lib/typescript/src/components/bottom-sheet/bottom-sheet.constants.d.ts
+deleted file mode 100644
+index 73298f387d85ae9aa427645bfa45256cc9b76e68..0000000000000000000000000000000000000000
+diff --git a/lib/typescript/src/components/bottom-sheet/bottom-sheet.constants.d.ts.map b/lib/typescript/src/components/bottom-sheet/bottom-sheet.constants.d.ts.map
+deleted file mode 100644
+index 301bf15edc8035f93aecb97c4bf4a65282a45d12..0000000000000000000000000000000000000000
+diff --git a/lib/typescript/src/components/bottom-sheet/bottom-sheet.d.ts b/lib/typescript/src/components/bottom-sheet/bottom-sheet.d.ts
+deleted file mode 100644
+index ed4d37978e690233dac98b3c47fc55ae0f46c9d7..0000000000000000000000000000000000000000
+diff --git a/lib/typescript/src/components/bottom-sheet/bottom-sheet.d.ts.map b/lib/typescript/src/components/bottom-sheet/bottom-sheet.d.ts.map
+deleted file mode 100644
+index c575875fc538646532846491c50f849604be43ca..0000000000000000000000000000000000000000
+diff --git a/lib/typescript/src/components/bottom-sheet/bottom-sheet.styles.d.ts b/lib/typescript/src/components/bottom-sheet/bottom-sheet.styles.d.ts
+deleted file mode 100644
+index 5dec98f33591921f7745323469aeb0fff76a3cb1..0000000000000000000000000000000000000000
+diff --git a/lib/typescript/src/components/bottom-sheet/bottom-sheet.styles.d.ts.map b/lib/typescript/src/components/bottom-sheet/bottom-sheet.styles.d.ts.map
+deleted file mode 100644
+index 4d36f7811e2be5c6142aa1c9c6c3a88301b272a1..0000000000000000000000000000000000000000
+diff --git a/lib/typescript/src/components/bottom-sheet/bottom-sheet.types.d.ts b/lib/typescript/src/components/bottom-sheet/bottom-sheet.types.d.ts
+deleted file mode 100644
+index 52eea502d4fffd4fa2898a4a6e702d3c34dc7c04..0000000000000000000000000000000000000000
+diff --git a/lib/typescript/src/components/bottom-sheet/bottom-sheet.types.d.ts.map b/lib/typescript/src/components/bottom-sheet/bottom-sheet.types.d.ts.map
+deleted file mode 100644
+index 41168ba762f5ba42fddac1784f5dfe5ade953f2e..0000000000000000000000000000000000000000
+diff --git a/lib/typescript/src/components/bottom-sheet/index.d.ts b/lib/typescript/src/components/bottom-sheet/index.d.ts
+deleted file mode 100644
+index 4017fb9fe682d718f1891420781d47513b873524..0000000000000000000000000000000000000000
+diff --git a/lib/typescript/src/components/bottom-sheet/index.d.ts.map b/lib/typescript/src/components/bottom-sheet/index.d.ts.map
+deleted file mode 100644
+index d6b23e8384afca74aa6882d0ab1692c031d5acbe..0000000000000000000000000000000000000000
+diff --git a/lib/typescript/src/components/menu/menu.d.ts b/lib/typescript/src/components/menu/menu.d.ts
+index e8945e988c07850d992e48fccfa4962fc13c7186..722c33c501f2bd514bc5f067332f4794bb74f035 100644
+--- a/lib/typescript/src/components/menu/menu.d.ts
++++ b/lib/typescript/src/components/menu/menu.d.ts
+@@ -47,7 +47,7 @@ declare const Menu: import("react").ForwardRefExoticComponent<MenuRootProps & im
+         displayName: string;
+     };
+     Overlay: import("react").ForwardRefExoticComponent<MenuOverlayProps & import("react").RefAttributes<View>>;
+-    Content: import("react").ForwardRefExoticComponent<MenuContentProps & import("react").RefAttributes<View | import("@gorhom/bottom-sheet/lib/typescript/types").BottomSheetMethods>>;
++    Content: import("react").ForwardRefExoticComponent<MenuContentProps & import("react").RefAttributes<View>>;
+     ContentBackground: import("react").ForwardRefExoticComponent<import("react-native").ViewProps & {
+         className?: string;
+     } & import("react").RefAttributes<View>>;
+diff --git a/lib/typescript/src/components/menu/menu.types.d.ts b/lib/typescript/src/components/menu/menu.types.d.ts
+index 61184dbb04fba5adda84b152b8f1792ff9def9c6..abf998ff9e8e3a55e893eaa52ae883e4b0221dad 100644
+--- a/lib/typescript/src/components/menu/menu.types.d.ts
++++ b/lib/typescript/src/components/menu/menu.types.d.ts
+@@ -1,8 +1,7 @@
+-import type { BottomSheetProps } from '@gorhom/bottom-sheet';
+ import type { ReactNode } from 'react';
+ import type { TextProps, ViewProps } from 'react-native';
+ import type { SharedValue, WithTimingConfig } from 'react-native-reanimated';
+-import type { Animation, AnimationRootDisableAll, AnimationValue, BaseBottomSheetContentProps, PopupOverlayAnimation, PopupPopoverContentAnimation } from '../../helpers/internal/types';
++import type { Animation, AnimationRootDisableAll, AnimationValue, PopupOverlayAnimation, PopupPopoverContentAnimation } from '../../helpers/internal/types';
+ import type * as MenuPrimitivesTypes from '../../primitives/menu/menu.types';
+ import type { CloseButtonProps } from '../close-button/close-button.types';
+ /**
+@@ -31,7 +30,7 @@ export type MenuTriggerRef = MenuPrimitivesTypes.TriggerRef;
+ /**
+  * Presentation mode for the menu content
+  */
+-export type MenuPresentation = 'popover' | 'bottom-sheet';
++export type MenuPresentation = 'popover';
+ /**
+  * Menu placement options
+  */
+@@ -162,19 +161,10 @@ export interface MenuContentPopoverProps extends MenuPrimitivesTypes.ContentProp
+      */
+     animation?: PopupPopoverContentAnimation;
+ }
+-/**
+- * Menu Content props for 'bottom-sheet' presentation
+- */
+-export interface MenuContentBottomSheetProps extends Partial<BottomSheetProps>, BaseBottomSheetContentProps {
+-    /**
+-     * Presentation mode for the menu
+-     */
+-    presentation: 'bottom-sheet';
+-}
+ /**
+  * Menu Content component props
+  */
+-export type MenuContentProps = MenuContentPopoverProps | MenuContentBottomSheetProps;
++export type MenuContentProps = MenuContentPopoverProps;
+ /**
+  * Menu Close component props
+  *
+diff --git a/lib/typescript/src/components/popover/popover.d.ts b/lib/typescript/src/components/popover/popover.d.ts
+index 00a405025107d74bbc410bd6fdb63c2d0dc31747..6b7ea14033ee9160b7d49fabe3549c7b694b5a37 100644
+--- a/lib/typescript/src/components/popover/popover.d.ts
++++ b/lib/typescript/src/components/popover/popover.d.ts
+@@ -51,7 +51,7 @@ declare const Popover: import("react").ForwardRefExoticComponent<PopoverRootProp
+         displayName: string;
+     };
+     Overlay: import("react").ForwardRefExoticComponent<PopoverOverlayProps & import("react").RefAttributes<View>>;
+-    Content: import("react").ForwardRefExoticComponent<PopoverContentProps & import("react").RefAttributes<View | import("@gorhom/bottom-sheet/lib/typescript/types").BottomSheetMethods>>;
++    Content: import("react").ForwardRefExoticComponent<PopoverContentProps & import("react").RefAttributes<View>>;
+     ContentBackground: import("react").ForwardRefExoticComponent<import("react-native").ViewProps & {
+         className?: string;
+     } & import("react").RefAttributes<View>>;
+diff --git a/lib/typescript/src/components/popover/popover.types.d.ts b/lib/typescript/src/components/popover/popover.types.d.ts
+index 014882a70516504e68731f827aadd6de3e128a02..ebcc8f8425314b5f571c03375473ab5802c80c20 100644
+--- a/lib/typescript/src/components/popover/popover.types.d.ts
++++ b/lib/typescript/src/components/popover/popover.types.d.ts
+@@ -1,8 +1,7 @@
+-import type { BottomSheetProps } from '@gorhom/bottom-sheet';
+ import type { ReactNode } from 'react';
+ import type { StyleProp, TextProps, ViewProps, ViewStyle } from 'react-native';
+ import type { SharedValue } from 'react-native-reanimated';
+-import type { AnimationRootDisableAll, BaseBottomSheetContentProps, PopupOverlayAnimation, PopupPopoverContentAnimation } from '../../helpers/internal/types';
++import type { AnimationRootDisableAll, PopupOverlayAnimation, PopupPopoverContentAnimation } from '../../helpers/internal/types';
+ import type * as PopoverPrimitivesTypes from '../../primitives/popover/popover.types';
+ import type { CloseButtonProps } from '../close-button/close-button.types';
+ /**
+@@ -21,7 +20,7 @@ export type PopoverTriggerRef = PopoverPrimitivesTypes.TriggerRef;
+ /**
+  * Presentation mode for the popover content
+  */
+-export type PopoverPresentation = 'popover' | 'bottom-sheet';
++export type PopoverPresentation = 'popover';
+ /**
+  * Popover placement options
+  */
+@@ -180,19 +179,10 @@ export interface PopoverContentPopoverProps extends PopoverPrimitivesTypes.Conte
+      */
+     animation?: PopupPopoverContentAnimation;
+ }
+-/**
+- * Popover Content props for 'bottom-sheet' presentation
+- */
+-export interface PopoverContentBottomSheetProps extends Partial<BottomSheetProps>, BaseBottomSheetContentProps {
+-    /**
+-     * Presentation mode for the popover
+-     */
+-    presentation: 'bottom-sheet';
+-}
+ /**
+  * Popover Content component props
+  */
+-export type PopoverContentProps = PopoverContentPopoverProps | PopoverContentBottomSheetProps;
++export type PopoverContentProps = PopoverContentPopoverProps;
+ /**
+  * Popover Close component props
+  *
+diff --git a/lib/typescript/src/components/select/select.d.ts b/lib/typescript/src/components/select/select.d.ts
+index 31c116a3a35286df610ee8fcd07c9ca1d7be886c..8f4b3da24400e55573c697629754f382fc6a1c6c 100644
+--- a/lib/typescript/src/components/select/select.d.ts
++++ b/lib/typescript/src/components/select/select.d.ts
+@@ -84,7 +84,7 @@ declare const Select: typeof SelectRoot & {
+         displayName: "HeroUINative.Select.Portal";
+     };
+     Overlay: import("react").ForwardRefExoticComponent<SelectOverlayProps & import("react").RefAttributes<View>>;
+-    Content: import("react").ForwardRefExoticComponent<SelectContentProps & import("react").RefAttributes<View | import("@gorhom/bottom-sheet/lib/typescript/types").BottomSheetMethods>>;
++    Content: import("react").ForwardRefExoticComponent<SelectContentProps & import("react").RefAttributes<View>>;
+     /** @optional Theme-aware background container behind the select content */
+     ContentBackground: import("react").ForwardRefExoticComponent<import("react-native").ViewProps & {
+         className?: string;
+diff --git a/lib/typescript/src/components/select/select.types.d.ts b/lib/typescript/src/components/select/select.types.d.ts
+index 99073a2591eef841f0174c103cf62e8815f828ae..de48fd751c0d223e4215c33ddeaafd33447e0bc8 100644
+--- a/lib/typescript/src/components/select/select.types.d.ts
++++ b/lib/typescript/src/components/select/select.types.d.ts
+@@ -1,8 +1,7 @@
+-import type { BottomSheetProps } from '@gorhom/bottom-sheet';
+ import type { ReactNode } from 'react';
+ import type { TextProps, ViewProps, ViewStyle } from 'react-native';
+ import type { AnimatedProps, SharedValue, WithSpringConfig } from 'react-native-reanimated';
+-import type { Animation, AnimationRootDisableAll, AnimationValue, BaseBottomSheetContentProps, ElementSlots, PopupDialogContentAnimation, PopupOverlayAnimation, PopupPopoverContentAnimation } from '../../helpers/internal/types';
++import type { Animation, AnimationRootDisableAll, AnimationValue, ElementSlots, PopupDialogContentAnimation, PopupOverlayAnimation, PopupPopoverContentAnimation } from '../../helpers/internal/types';
+ import type * as SelectPrimitivesTypes from '../../primitives/select/select.types';
+ import type { CloseButtonProps } from '../close-button/close-button.types';
+ import type { DialogContentFallbackSlots } from './select.styles';
+@@ -289,15 +288,6 @@ export interface SelectContentPopoverProps extends SelectPrimitivesTypes.Popover
+      */
+     animation?: SelectContentPopoverAnimation;
+ }
+-/**
+- * Select Content props for 'bottom-sheet' presentation
+- */
+-export interface SelectContentBottomSheetProps extends Partial<BottomSheetProps>, BaseBottomSheetContentProps {
+-    /**
+-     * Presentation mode for the select
+-     */
+-    presentation: 'bottom-sheet';
+-}
+ /**
+  * Animation configuration for Select Content component (dialog presentation)
+  * Reuses PopupDialogContentAnimation since they share the same animation behavior
+@@ -348,7 +338,7 @@ export interface SelectContentDialogProps extends SelectPrimitivesTypes.DialogCo
+ /**
+  * Select Content component props
+  */
+-export type SelectContentProps = SelectContentPopoverProps | SelectContentBottomSheetProps | SelectContentDialogProps;
++export type SelectContentProps = SelectContentPopoverProps | SelectContentDialogProps;
+ /**
+  * Select Close component props
+  *
+diff --git a/lib/typescript/src/helpers/external/hooks/index.d.ts b/lib/typescript/src/helpers/external/hooks/index.d.ts
+index e054f7e5ecc789395d1776d1c637a31b05352f2b..0d67267a1002fd5bbcce6dd21b49e5a47c33db05 100644
+--- a/lib/typescript/src/helpers/external/hooks/index.d.ts
++++ b/lib/typescript/src/helpers/external/hooks/index.d.ts
+@@ -1,7 +1,6 @@
+ export { useTextComponent } from '../../../providers/text-component/index';
+ export { useTextInputComponent } from '../../../providers/text-input-component/index';
+ export * from '../../internal/hooks/use-combined-animation-disabled-state';
+-export * from './use-bottom-sheet-aware-handlers';
+ export * from './use-is-on-surface';
+ export * from './use-theme-color';
+ //# sourceMappingURL=index.d.ts.map
+diff --git a/lib/typescript/src/helpers/external/hooks/use-bottom-sheet-aware-handlers.d.ts b/lib/typescript/src/helpers/external/hooks/use-bottom-sheet-aware-handlers.d.ts
+deleted file mode 100644
+index 9771fa4a8b1ec3bb7197c6c19d1f94d67ac7a9a6..0000000000000000000000000000000000000000
+diff --git a/lib/typescript/src/helpers/external/hooks/use-bottom-sheet-aware-handlers.d.ts.map b/lib/typescript/src/helpers/external/hooks/use-bottom-sheet-aware-handlers.d.ts.map
+deleted file mode 100644
+index 3d00764362ab3d9f840acfe0baca0109181b5d2b..0000000000000000000000000000000000000000
+diff --git a/lib/typescript/src/helpers/internal/components/bottom-sheet-content-container.d.ts b/lib/typescript/src/helpers/internal/components/bottom-sheet-content-container.d.ts
+deleted file mode 100644
+index d7aa11af087eb1650be2e2a781187fdefe7858f3..0000000000000000000000000000000000000000
+diff --git a/lib/typescript/src/helpers/internal/components/bottom-sheet-content-container.d.ts.map b/lib/typescript/src/helpers/internal/components/bottom-sheet-content-container.d.ts.map
+deleted file mode 100644
+index e7fb9e55912394901c19c16e95ff28d2da18a3b7..0000000000000000000000000000000000000000
+diff --git a/lib/typescript/src/helpers/internal/components/bottom-sheet-content.d.ts b/lib/typescript/src/helpers/internal/components/bottom-sheet-content.d.ts
+deleted file mode 100644
+index 59d8502b9b696a0d2f8b21a33e91624a7a5e578b..0000000000000000000000000000000000000000
+diff --git a/lib/typescript/src/helpers/internal/components/bottom-sheet-content.d.ts.map b/lib/typescript/src/helpers/internal/components/bottom-sheet-content.d.ts.map
+deleted file mode 100644
+index 8aed35bd6c90923208d22b50db62e5e638a97975..0000000000000000000000000000000000000000
+diff --git a/lib/typescript/src/helpers/internal/components/index.d.ts b/lib/typescript/src/helpers/internal/components/index.d.ts
+index 987af2ec4d4fbc8bc56cd534e3dabae7a7809583..0efd8d77a0e6d8adceb21792d25a5c4132e7d8c2 100644
+--- a/lib/typescript/src/helpers/internal/components/index.d.ts
++++ b/lib/typescript/src/helpers/internal/components/index.d.ts
+@@ -1,6 +1,4 @@
+ export * from './animated-check-icon';
+-export * from './bottom-sheet-content';
+-export * from './bottom-sheet-content-container';
+ export * from './check-icon';
+ export * from './chevron-down-icon';
+ export * from './chevron-right-icon';
+diff --git a/lib/typescript/src/helpers/internal/contexts/bottom-sheet-is-dragging-context.d.ts b/lib/typescript/src/helpers/internal/contexts/bottom-sheet-is-dragging-context.d.ts
+deleted file mode 100644
+index 0d5b71514950fa2ec79df8cc6a78262a127c6f6e..0000000000000000000000000000000000000000
+diff --git a/lib/typescript/src/helpers/internal/contexts/bottom-sheet-is-dragging-context.d.ts.map b/lib/typescript/src/helpers/internal/contexts/bottom-sheet-is-dragging-context.d.ts.map
+deleted file mode 100644
+index dfa8bb870578979138876c82e7305eae831ffc24..0000000000000000000000000000000000000000
+diff --git a/lib/typescript/src/helpers/internal/contexts/index.d.ts b/lib/typescript/src/helpers/internal/contexts/index.d.ts
+index 431cec118e20d3adaa792220817071a61f32d511..65c16f7f126e3828d37258378983c5e55e07ff74 100644
+--- a/lib/typescript/src/helpers/internal/contexts/index.d.ts
++++ b/lib/typescript/src/helpers/internal/contexts/index.d.ts
+@@ -1,4 +1,3 @@
+ export * from './animation-settings-context';
+-export * from './bottom-sheet-is-dragging-context';
+ export * from './form-field-context';
+ //# sourceMappingURL=index.d.ts.map
+diff --git a/lib/typescript/src/helpers/internal/hooks/index.d.ts b/lib/typescript/src/helpers/internal/hooks/index.d.ts
+index 49457f0bb371905a37233862dca3068340a4cbfe..269dca6a8e04a35394339022b11ea2d793357a34 100644
+--- a/lib/typescript/src/helpers/internal/hooks/index.d.ts
++++ b/lib/typescript/src/helpers/internal/hooks/index.d.ts
+@@ -1,11 +1,9 @@
+ export * from './use-augmented-ref';
+-export * from './use-bottom-sheet-gesture-handlers';
+ export * from './use-combined-animation-disabled-state';
+ export * from './use-controllable-state';
+ export * from './use-dev-info';
+ export * from './use-keyboard-status';
+ export * from './use-library-theme';
+-export * from './use-popup-bottom-sheet-content-animation';
+ export * from './use-popup-dialog-content-animation';
+ export * from './use-popup-overlay-animation';
+ export * from './use-popup-overlay-variant';
+diff --git a/lib/typescript/src/helpers/internal/hooks/use-bottom-sheet-gesture-handlers.d.ts b/lib/typescript/src/helpers/internal/hooks/use-bottom-sheet-gesture-handlers.d.ts
+deleted file mode 100644
+index 6bbf265e4cf800896a86240e5eefca499a844354..0000000000000000000000000000000000000000
+diff --git a/lib/typescript/src/helpers/internal/hooks/use-bottom-sheet-gesture-handlers.d.ts.map b/lib/typescript/src/helpers/internal/hooks/use-bottom-sheet-gesture-handlers.d.ts.map
+deleted file mode 100644
+index 162d02cadb7176d841a64b443f0dd33ea7d63127..0000000000000000000000000000000000000000
+diff --git a/lib/typescript/src/helpers/internal/hooks/use-popup-bottom-sheet-content-animation.d.ts b/lib/typescript/src/helpers/internal/hooks/use-popup-bottom-sheet-content-animation.d.ts
+deleted file mode 100644
+index f34da90809e9083eb8921f634622cf124dc65b43..0000000000000000000000000000000000000000
+diff --git a/lib/typescript/src/helpers/internal/hooks/use-popup-bottom-sheet-content-animation.d.ts.map b/lib/typescript/src/helpers/internal/hooks/use-popup-bottom-sheet-content-animation.d.ts.map
+deleted file mode 100644
+index 5e4d7337fb66a4d38a6962645c97938605170339..0000000000000000000000000000000000000000
+diff --git a/lib/typescript/src/helpers/internal/types/bottom-sheet.d.ts b/lib/typescript/src/helpers/internal/types/bottom-sheet.d.ts
+deleted file mode 100644
+index f88f1777bccd8ea06a0b9c76401d558b49126894..0000000000000000000000000000000000000000
+diff --git a/lib/typescript/src/helpers/internal/types/bottom-sheet.d.ts.map b/lib/typescript/src/helpers/internal/types/bottom-sheet.d.ts.map
+deleted file mode 100644
+index de09fd3cabde17f9e4b3deb21031daae9de54d5f..0000000000000000000000000000000000000000
+diff --git a/lib/typescript/src/helpers/internal/types/index.d.ts b/lib/typescript/src/helpers/internal/types/index.d.ts
+index e74ae51dfc1ad5b2af3cb523378b83ec940d85aa..5701f9e5098e669d0b38ed5d2843c302ffeba4c5 100644
+--- a/lib/typescript/src/helpers/internal/types/index.d.ts
++++ b/lib/typescript/src/helpers/internal/types/index.d.ts
+@@ -1,5 +1,4 @@
+ export * from './animation';
+-export * from './bottom-sheet';
+ export * from './misc';
+ export * from './overlay';
+ export * from './primitives';
+diff --git a/lib/typescript/src/index.d.ts b/lib/typescript/src/index.d.ts
+index 676c22abda41a615b8c61b721acc43bd55a73422..af873f6f8ac2551abd4ec69b51e001c87191d376 100644
+--- a/lib/typescript/src/index.d.ts
++++ b/lib/typescript/src/index.d.ts
+@@ -1,7 +1,6 @@
+ export * from './components/accordion';
+ export * from './components/alert';
+ export * from './components/avatar';
+-export * from './components/bottom-sheet';
+ export * from './components/button';
+ export * from './components/card';
+ export * from './components/checkbox';
+diff --git a/lib/typescript/src/optional/gorhom-bottom-sheet.d.ts b/lib/typescript/src/optional/gorhom-bottom-sheet.d.ts
+deleted file mode 100644
+index 7608dd1a18fc721748087845ce6905bd5347f85a..0000000000000000000000000000000000000000
+diff --git a/lib/typescript/src/optional/gorhom-bottom-sheet.d.ts.map b/lib/typescript/src/optional/gorhom-bottom-sheet.d.ts.map
+deleted file mode 100644
+index 8822e14322fb17d1de212477f61bccba4131c940..0000000000000000000000000000000000000000
+diff --git a/lib/typescript/src/primitives/bottom-sheet/bottom-sheet.d.ts b/lib/typescript/src/primitives/bottom-sheet/bottom-sheet.d.ts
+deleted file mode 100644
+index 0982046a18cc58839e25955b4493acc679feb304..0000000000000000000000000000000000000000
+diff --git a/lib/typescript/src/primitives/bottom-sheet/bottom-sheet.d.ts.map b/lib/typescript/src/primitives/bottom-sheet/bottom-sheet.d.ts.map
+deleted file mode 100644
+index 1b412c373ba76b74dec932e4f9ccaf56fcaee671..0000000000000000000000000000000000000000
+diff --git a/lib/typescript/src/primitives/bottom-sheet/bottom-sheet.types.d.ts b/lib/typescript/src/primitives/bottom-sheet/bottom-sheet.types.d.ts
+deleted file mode 100644
+index 61f1da391f9837d2e76677666d16937a60e9064f..0000000000000000000000000000000000000000
+diff --git a/lib/typescript/src/primitives/bottom-sheet/bottom-sheet.types.d.ts.map b/lib/typescript/src/primitives/bottom-sheet/bottom-sheet.types.d.ts.map
+deleted file mode 100644
+index cab1f4792e4e19c88d8a1385c6b2dc1684f61d77..0000000000000000000000000000000000000000
+diff --git a/lib/typescript/src/primitives/bottom-sheet/index.d.ts b/lib/typescript/src/primitives/bottom-sheet/index.d.ts
+deleted file mode 100644
+index 90c1d1bceeb7fb8b119dd0a25355768d53789979..0000000000000000000000000000000000000000
+diff --git a/lib/typescript/src/primitives/bottom-sheet/index.d.ts.map b/lib/typescript/src/primitives/bottom-sheet/index.d.ts.map
+deleted file mode 100644
+index 86612d7f8ebf3b49b9c61499bcf687f97d2c9bd0..0000000000000000000000000000000000000000
+diff --git a/src/components/bottom-sheet/bottom-sheet.animation.ts b/src/components/bottom-sheet/bottom-sheet.animation.ts
+deleted file mode 100644
+index f1f99f6377d1abbd4da24381fa866d766f4023d1..0000000000000000000000000000000000000000
+diff --git a/src/components/bottom-sheet/bottom-sheet.constants.ts b/src/components/bottom-sheet/bottom-sheet.constants.ts
+deleted file mode 100644
+index e777bd93916d65ab92f9ecf105653b2be687fa41..0000000000000000000000000000000000000000
+diff --git a/src/components/bottom-sheet/bottom-sheet.md b/src/components/bottom-sheet/bottom-sheet.md
+deleted file mode 100644
+index 537f0f4f717eef3c0ea79e9521ef6c226581c06a..0000000000000000000000000000000000000000
+diff --git a/src/components/bottom-sheet/bottom-sheet.styles.ts b/src/components/bottom-sheet/bottom-sheet.styles.ts
+deleted file mode 100644
+index 16f3be2b4795609cb5a125c6773bbd70bdc38440..0000000000000000000000000000000000000000
+diff --git a/src/components/bottom-sheet/bottom-sheet.tsx b/src/components/bottom-sheet/bottom-sheet.tsx
+deleted file mode 100644
+index 811c896acd3af661391e3548e84c831aa47224e6..0000000000000000000000000000000000000000
+diff --git a/src/components/bottom-sheet/bottom-sheet.types.ts b/src/components/bottom-sheet/bottom-sheet.types.ts
+deleted file mode 100644
+index ee27ae5aa496169e222dd5690e5923922c42df0d..0000000000000000000000000000000000000000
+diff --git a/src/components/bottom-sheet/index.ts b/src/components/bottom-sheet/index.ts
+deleted file mode 100644
+index 9614c248e51af3e5b4c5be918c239813636afeb6..0000000000000000000000000000000000000000
+diff --git a/src/components/input/input.tsx b/src/components/input/input.tsx
+index ab1304dd46cb3d8a704e4499f00ef7b12bfd73ff..f91b896ecbf00d4d8fb8aac87ae14d3248159408 100644
+--- a/src/components/input/input.tsx
++++ b/src/components/input/input.tsx
+@@ -1,6 +1,6 @@
+ import { forwardRef } from 'react';
+ import { View, type TextInput as TextInputType } from 'react-native';
+-import { useIsOnSurface } from '../../helpers/external/hooks';
++import { useIsOnSurface, useThemeColor } from '../../helpers/external/hooks';
+ import { cn } from '../../helpers/external/utils';
+ import {
+   HeroTextInput,
+@@ -47,8 +47,8 @@ const InputRoot = forwardRef<TextInputType, InputProps>((props, ref) => {
+     containerClassName: containerClassNameProp,
+     background,
+     style,
+-    selectionColorClassName: selectionColorClassNameProp,
+-    placeholderColorClassName: placeholderColorClassNameProp,
++    selectionColorClassName: _selectionColorClassName,
++    placeholderColorClassName: _placeholderColorClassName,
+     ...restProps
+   } = props;
+   const formField = useFormField();
+@@ -110,22 +110,20 @@ const InputRoot = forwardRef<TextInputType, InputProps>((props, ref) => {
+       : cn(containerClassName, className),
+   });
+ 
+-  const placeholderColorClassName = inputClassNames.placeholderTextColor({
+-    className: placeholderColorClassNameProp,
+-  });
+-
+-  const selectionColorClassName = inputClassNames.inputSelectionColor({
+-    isInvalid,
+-    className: selectionColorClassNameProp,
+-  });
++  // Theme colors via useThemeColor (the `accent-*` className extractor does
++  // not resolve custom semantic tokens, which also logs a one-time Uniwind
++  // warning). selectionColor/placeholderTextColor are native TextInput props
++  // that HeroTextInput passes through.
++  const placeholderTextColor = useThemeColor('field-placeholder');
++  const selectionColor = useThemeColor(isInvalid ? 'danger' : 'accent');
+ 
+   const textInput = (
+     <HeroTextInput
+       ref={ref}
+       className={inputClassName}
+       style={[inputStyleSheet.borderCurve, style]}
+-      placeholderTextColorClassName={placeholderColorClassName}
+-      selectionColorClassName={selectionColorClassName}
++      placeholderTextColor={placeholderTextColor}
++      selectionColor={selectionColor}
+       editable={!isDisabled}
+       {...restProps}
+     />
+diff --git a/src/helpers/external/hooks/index.ts b/src/helpers/external/hooks/index.ts
+index be39d3e312265c9676493b60e3c3414a3cb63ea1..8fbc561049dbd1c859bc2f8602a7b3d605bd868e 100644
+--- a/src/helpers/external/hooks/index.ts
++++ b/src/helpers/external/hooks/index.ts
+@@ -1,6 +1,5 @@
+ export { useTextComponent } from '../../../providers/text-component/index';
+ export { useTextInputComponent } from '../../../providers/text-input-component/index';
+ export * from '../../internal/hooks/use-combined-animation-disabled-state';
+-export * from './use-bottom-sheet-aware-handlers';
+ export * from './use-is-on-surface';
+ export * from './use-theme-color';
+diff --git a/src/helpers/external/hooks/use-bottom-sheet-aware-handlers.ts b/src/helpers/external/hooks/use-bottom-sheet-aware-handlers.ts
+deleted file mode 100644
+index 9627d6e8a05001f61b3d32563a199d0de1f3c529..0000000000000000000000000000000000000000
+diff --git a/src/helpers/internal/components/bottom-sheet-content-container.tsx b/src/helpers/internal/components/bottom-sheet-content-container.tsx
+deleted file mode 100644
+index 23de843229d5420194ae3e9eef5a19b94c22fe02..0000000000000000000000000000000000000000
+diff --git a/src/helpers/internal/components/bottom-sheet-content.tsx b/src/helpers/internal/components/bottom-sheet-content.tsx
+deleted file mode 100644
+index 45c7429f520b4bd484722fe0252d3fa0b7fed2d3..0000000000000000000000000000000000000000
+diff --git a/src/helpers/internal/components/index.ts b/src/helpers/internal/components/index.ts
+index 80f70cc0b7d08bc8bb05f1f0836f7666ba7985d7..bb95ccac49b15e76356324e1efd653dd2bc87ebc 100644
+--- a/src/helpers/internal/components/index.ts
++++ b/src/helpers/internal/components/index.ts
+@@ -1,6 +1,4 @@
+ export * from './animated-check-icon';
+-export * from './bottom-sheet-content';
+-export * from './bottom-sheet-content-container';
+ export * from './check-icon';
+ export * from './chevron-down-icon';
+ export * from './chevron-right-icon';
+diff --git a/src/helpers/internal/contexts/bottom-sheet-is-dragging-context.ts b/src/helpers/internal/contexts/bottom-sheet-is-dragging-context.ts
+deleted file mode 100644
+index 04e2eaf1851fef7698795bbbad0ad1689df6e4db..0000000000000000000000000000000000000000
+diff --git a/src/helpers/internal/contexts/index.ts b/src/helpers/internal/contexts/index.ts
+index 0c3d4c9f4d77f311b00b960b78d06a3053d1848c..79ec7016cbc9e2ef2debf8dd8fb6a0d739397846 100644
+--- a/src/helpers/internal/contexts/index.ts
++++ b/src/helpers/internal/contexts/index.ts
+@@ -1,3 +1,2 @@
+ export * from './animation-settings-context';
+-export * from './bottom-sheet-is-dragging-context';
+ export * from './form-field-context';
+diff --git a/src/helpers/internal/hooks/index.ts b/src/helpers/internal/hooks/index.ts
+index e28d37986266e5e8ee2a9d5f32f4b4979704afd5..b958efcbef3127a60f7633832ab2045808c8e5da 100644
+--- a/src/helpers/internal/hooks/index.ts
++++ b/src/helpers/internal/hooks/index.ts
+@@ -1,11 +1,9 @@
+ export * from './use-augmented-ref';
+-export * from './use-bottom-sheet-gesture-handlers';
+ export * from './use-combined-animation-disabled-state';
+ export * from './use-controllable-state';
+ export * from './use-dev-info';
+ export * from './use-keyboard-status';
+ export * from './use-library-theme';
+-export * from './use-popup-bottom-sheet-content-animation';
+ export * from './use-popup-dialog-content-animation';
+ export * from './use-popup-overlay-animation';
+ export * from './use-popup-overlay-variant';
+diff --git a/src/helpers/internal/hooks/use-bottom-sheet-gesture-handlers.ts b/src/helpers/internal/hooks/use-bottom-sheet-gesture-handlers.ts
+deleted file mode 100644
+index 6bb9b8299f77444daa09758a5b1bd16fdef74cac..0000000000000000000000000000000000000000
+diff --git a/src/helpers/internal/hooks/use-popup-bottom-sheet-content-animation.ts b/src/helpers/internal/hooks/use-popup-bottom-sheet-content-animation.ts
+deleted file mode 100644
+index f975322c7840b94027a776c546a937d07db5e5c8..0000000000000000000000000000000000000000
+diff --git a/src/helpers/internal/types/bottom-sheet.ts b/src/helpers/internal/types/bottom-sheet.ts
+deleted file mode 100644
+index e763b4164ff924f23fb59fbc1813043a4fbde147..0000000000000000000000000000000000000000
+diff --git a/src/helpers/internal/types/index.ts b/src/helpers/internal/types/index.ts
+index b1e754362f00aab05757e40aa7ab7c0ba4d41349..fa46d67610ad4a0fe070740628571356906b6139 100644
+--- a/src/helpers/internal/types/index.ts
++++ b/src/helpers/internal/types/index.ts
+@@ -1,5 +1,4 @@
+ export * from './animation';
+-export * from './bottom-sheet';
+ export * from './misc';
+ export * from './overlay';
+ export * from './primitives';
+diff --git a/src/index.tsx b/src/index.tsx
+index ccb9ff21fda871d34b6ef0b6407df6784977a3cc..9df20f825abb1beb05dba51f9542627c5576bda0 100644
+--- a/src/index.tsx
++++ b/src/index.tsx
+@@ -2,7 +2,6 @@
+ export * from './components/accordion';
+ export * from './components/alert';
+ export * from './components/avatar';
+-export * from './components/bottom-sheet';
+ export * from './components/button';
+ export * from './components/card';
+ export * from './components/checkbox';
+diff --git a/src/optional/gorhom-bottom-sheet.ts b/src/optional/gorhom-bottom-sheet.ts
+deleted file mode 100644
+index 36445127c02487aa72c4c6bb0a87ae02bbc4b09b..0000000000000000000000000000000000000000
+diff --git a/src/primitives/bottom-sheet/bottom-sheet.tsx b/src/primitives/bottom-sheet/bottom-sheet.tsx
+deleted file mode 100644
+index 2747d5881aa5205dcd6cb005c46d7595eac59474..0000000000000000000000000000000000000000
+diff --git a/src/primitives/bottom-sheet/bottom-sheet.types.ts b/src/primitives/bottom-sheet/bottom-sheet.types.ts
+deleted file mode 100644
+index 8bc3178c371770e2210ecd610eea94d5456bb160..0000000000000000000000000000000000000000
+diff --git a/src/primitives/bottom-sheet/index.ts b/src/primitives/bottom-sheet/index.ts
+deleted file mode 100644
+index baee504279301969e0445bc9f98d9c8b9937e450..0000000000000000000000000000000000000000
+diff --git a/src/styles/components/bottom-sheet.css b/src/styles/components/bottom-sheet.css
+deleted file mode 100644
+index 11eab823c36d67499d47e9ce7cb2bfc6b0824eae..0000000000000000000000000000000000000000

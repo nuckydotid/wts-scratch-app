@@ -1,0 +1,109 @@
+# Dev-command catalog for Worktrees Studio (trust-gated; edits require re-approval).
+# Validate: bun scripts/validate-commands.ts
+version: 1
+
+apps:
+  - id: app
+    label: app
+    root: apps/app
+    scopes:
+      - id: dev
+        label: dev
+        groups:
+          - name: App
+            icon: iphone
+            commands:
+              - title: Install dependencies
+                ui: { type: shell, shell: "cd {{ROOT}} && bun install" }
+              - title: Start Expo
+                ui: { type: shell, shell: "bun run start" }
+              - title: Start Expo Web
+                ui: { type: shell, shell: "bun run web" }
+              - title: Typecheck all
+                ui: { type: shell, shell: "cd {{ROOT}} && bun run typecheck" }
+          - name: Design system
+            icon: paintbrush
+            commands:
+              - title: Start DS Stories (:8085)
+                cwd: "{{ROOT}}/packages/worktrees-studio-ds"
+                ui:
+                  type: shell
+                  shell: >-
+                    while lsof -ti :8085 >/dev/null 2>&1; do lsof -ti :8085 2>/dev/null | xargs kill -9 2>/dev/null; sleep 1; done; bun run start:web
+              - title: Deploy design site (Firebase Hosting)
+                ui: { type: shell, shell: "cd {{ROOT}} && bash scripts/ship/deploy-design.sh" }
+              - title: Deploy design preview channel
+                ui: { type: shell, shell: "cd {{ROOT}} && DESIGN_CHANNEL=preview bash scripts/ship/deploy-design.sh" }
+
+      - id: test
+        label: test
+        groups:
+          - name: Unit & integration
+            icon: checkmark.seal
+            commands:
+              - title: Run all tests
+                ui: { type: shell, shell: "cd {{ROOT}} && bun run test" }
+              - title: Run app tests
+                ui: { type: shell, shell: "bun run test" }
+              - title: Run API tests
+                cwd: "{{ROOT}}/backend"
+                ui: { type: shell, shell: "bun run test" }
+          - name: E2E (Maestro)
+            icon: play.rectangle
+            commands:
+              - title: Run all Maestro flows
+                ui: { type: shell, shell: "cd {{ROOT}} && maestro test .maestro" }
+
+      - id: backend
+        label: backend
+        groups:
+          - name: API (Cloud Run)
+            icon: cloud
+            commands:
+              - title: Run API locally (:8080)
+                ui: { type: shell, shell: "cd {{ROOT}} && bun run dev:api" }
+              - title: Run team server locally (:8080)
+                ui: { type: shell, shell: "cd {{ROOT}} && bun run dev:team" }
+              - title: Deploy API to staging
+                ui: { type: shell, shell: "cd {{ROOT}} && bash scripts/ship/deploy-service.sh api-staging" }
+              - title: Deploy API to production
+                ui: { type: shell, shell: "cd {{ROOT}} && bash scripts/ship/deploy-service.sh api-prod" }
+              - title: Deploy team server
+                ui: { type: shell, shell: "cd {{ROOT}} && bash scripts/ship/deploy-service.sh team" }
+              - title: Show production API logs
+                ui: { type: shell, shell: "cd {{ROOT}} && bash scripts/ship/api-logs.sh api-prod" }
+              - title: Show team server logs
+                ui: { type: shell, shell: "cd {{ROOT}} && bash scripts/ship/api-logs.sh team" }
+
+      - id: ship
+        label: ship
+        groups:
+          - name: Build (no EAS)
+            icon: hammer
+            commands:
+              - title: Bump version
+                ui:
+                  type: form
+                  fields:
+                    - { token: version, kind: text, label: Version, placeholder: 1.0.1 }
+                  shell: "cd {{ROOT}} && bun scripts/apply-project-config.ts --version %version%"
+              - title: Android release APK (local)
+                ui: { type: shell, shell: "cd {{ROOT}} && bash scripts/ship/build-android.sh" }
+              - title: Web export
+                ui: { type: shell, shell: "bun run export:web" }
+          - name: Distribute (Firebase App Distribution)
+            icon: paperplane
+            commands:
+              - title: Upload Android APK to testers
+                ui: { type: shell, shell: "cd {{ROOT}} && bash scripts/ship/distribute-android.sh" }
+          - name: OTA (Cloud Run + Cloud Storage)
+            icon: arrow.up.circle
+            commands:
+              - title: Publish OTA bundle
+                ui:
+                  type: form
+                  fields:
+                    - { token: channel, kind: select, label: Channel, options: [{ label: Staging, value: staging }, { label: Production, value: production }] }
+                  shell: "cd {{ROOT}} && OTA_CHANNEL=%channel% bun scripts/ota/publish.ts"
+              - title: OTA status
+                ui: { type: shell, shell: "cd {{ROOT}} && bun scripts/ota/status.ts" }

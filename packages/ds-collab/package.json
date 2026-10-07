@@ -1,0 +1,15 @@
+{
+  "name": "@repo/ds-collab",
+  "version": "0.1.0",
+  "private": true,
+  "description": "Realtime collaboration for the design-system story web: cursors, follow, chat and pinned comments.",
+  "main": "src/index.ts",
+  "types": "src/index.ts",
+  "peerDependencies": {
+    "react": "*"
+  },
+  "scripts": {
+    "typecheck": "tsc --noEmit",
+    "test": "bun test"
+  }
+}

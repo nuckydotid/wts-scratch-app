@@ -1,0 +1,38 @@
+@import "tailwindcss";
+@import "uniwind";
+@import "heroui-native/styles";
+@import "./styles/global.css";
+
+@source '../node_modules/heroui-native/lib';
+
+@theme {
+  --font-mono: Menlo, Monaco, "Courier New", monospace;
+}
+
+/* Web: active tab label uses foreground instead of segment-foreground */
+.tabs__label--is-selected {
+  color: var(--color-foreground);
+}
+
+/* Web: make primary indicator translucent so label text shows through */
+.tabs__indicator--variant-primary {
+  background-color: color-mix(in oklab, var(--color-segment) 40%, transparent);
+}
+
+/* Hide all web scrollbars (storybook app handles its own scrolling) */
+::-webkit-scrollbar {
+  display: none;
+}
+* {
+  scrollbar-width: none;
+  -ms-overflow-style: none;
+}
+
+/* Phone frame node shadow */
+.phone-frame-node {
+  box-shadow: 0 12px 32px rgba(0, 0, 0, 0.15);
+}
+
+.dark .phone-frame-node {
+  box-shadow: 0 8px 32px rgba(0, 0, 0, 0.5);
+}

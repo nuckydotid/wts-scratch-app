@@ -1,0 +1,33 @@
+---
+title: "ConnectionMode"
+description: "Specifies the rules for how connections between nodes are established."
+source: "https://reactflow.dev/api-reference/types/connection-mode"
+---
+
+# ConnectionMode
+
+[Source on GitHub](https://github.com/xyflow/xyflow/blob/main/packages/system/src/types/general.ts#L68) 
+
+The `ConnectionMode` enum provides two options for connection behavior in React Flow:
+
+- `Strict`: Connections can only be made starting from a source handle and ending on a target handle
+- `Loose`: Connections can be made between any handles, regardless of type
+
+```tsx
+enum ConnectionMode {
+  Strict = "strict",
+  Loose = "loose",
+}
+```
+
+Last updated on August 24, 2026
+
+[
+
+ConnectionLineType
+
+](/api-reference/types/connection-line-type)[
+
+ConnectionState
+
+](/api-reference/types/connection-state)

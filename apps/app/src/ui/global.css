@@ -1,0 +1,19 @@
+@import "tailwindcss";
+@import "uniwind";
+@import "heroui-native/styles";
+@import "@repo/worktrees-studio-ds/styles";
+
+@source '../node_modules/heroui-native/lib';
+@source '../../../../packages/worktrees-studio-ds/src';
+
+@theme {
+  --font-mono: Menlo, Monaco, "Courier New", monospace;
+}
+
+::-webkit-scrollbar {
+  display: none;
+}
+* {
+  scrollbar-width: none;
+  -ms-overflow-style: none;
+}

@@ -1,0 +1,51 @@
+---
+title: "OnNodesChange"
+description: ""
+source: "https://reactflow.dev/api-reference/types/on-nodes-change"
+---
+
+# OnNodesChange
+
+This type is used for typing the [`onNodesChange`](/api-reference/react-flow#on-nodes-change) function.
+
+```tsx
+export type OnNodesChange<NodeType extends Node = Node> = (
+  changes: NodeChange<NodeType>[],
+) => void;
+```
+
+## Fields
+
+**Parameters:**
+
+| Name | Type | Default |
+| ---- | ---- | ------- |
+
+| `changes` | `[NodeChange](/api-reference/types/node-change)<[NodeType](/api-reference/types/node)>[]` | |
+
+**Returns:**
+
+`void`
+
+## Usage
+
+This type accepts a generic type argument of custom nodes types. See this [section in our TypeScript guide](/learn/advanced-use/typescript#nodetype-edgetype-unions) for more information.
+
+```tsx
+const onNodesChange: OnNodesChange = useCallback(
+  (changes) => setNodes((nds) => applyNodeChanges(changes, nds)),
+  [setNodes],
+);
+```
+
+Last updated on August 24, 2026
+
+[
+
+OnNodeDrag
+
+](/api-reference/types/on-node-drag)[
+
+OnNodesDelete
+
+](/api-reference/types/on-nodes-delete)

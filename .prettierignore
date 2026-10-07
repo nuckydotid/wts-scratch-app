@@ -1,0 +1,16 @@
+node_modules
+.expo
+dist
+web-build
+coverage
+**/coverage/**
+.artifacts
+bundles
+patches
+**/uniwind-types.d.ts
+
+# Offline rule-profile JSON exports — kept byte-identical for sha256 checksum validation
+plugins/local-sonar/*.json
+
+# Copied from src/shared/design by `npm run template:sync-core`; never reformat by hand
+packages/ds-collab/src/core/**

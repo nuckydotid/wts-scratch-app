@@ -1,0 +1,31 @@
+@import "tailwindcss";
+@import "uniwind";
+@import "heroui-native/styles";
+@import "@repo/worktrees-studio-ds/styles";
+@import "@xyflow/react/dist/style.css";
+
+@source '../node_modules/heroui-native/lib';
+@source '../node_modules/@repo/worktrees-studio-ds/src';
+
+@theme {
+  --font-mono: Menlo, Monaco, "Courier New", monospace;
+}
+
+/* Web: active tab label uses foreground instead of segment-foreground */
+.tabs__label--is-selected {
+  color: var(--color-foreground);
+}
+
+/* Web: make primary indicator translucent so label text shows through */
+.tabs__indicator--variant-primary {
+  background-color: color-mix(in oklab, var(--color-segment) 40%, transparent);
+}
+
+/* Hide web scrollbars for smooth canvas experience */
+::-webkit-scrollbar {
+  display: none;
+}
+* {
+  scrollbar-width: none;
+  -ms-overflow-style: none;
+}

@@ -1,0 +1,6 @@
+# Builds the API image with the repo root as context (the Dockerfile copies the workspace manifests).
+#   gcloud builds submit --config backend/cloudbuild.yaml --substitutions _IMAGE=REGION-docker.pkg.dev/PROJECT/images/api:TAG .
+steps:
+  - name: gcr.io/cloud-builders/docker
+    args: ["build", "-f", "backend/Dockerfile", "-t", "${_IMAGE}", "."]
+images: ["${_IMAGE}"]

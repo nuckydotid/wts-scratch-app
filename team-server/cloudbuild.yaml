@@ -1,0 +1,6 @@
+# Builds the team-server image with the repo root as context (the Dockerfile copies the workspace manifests).
+#   gcloud builds submit --config team-server/cloudbuild.yaml --substitutions _IMAGE=REGION-docker.pkg.dev/PROJECT/images/team:TAG .
+steps:
+  - name: gcr.io/cloud-builders/docker
+    args: ["build", "-f", "team-server/Dockerfile", "-t", "${_IMAGE}", "."]
+images: ["${_IMAGE}"]

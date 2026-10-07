@@ -1,0 +1,7 @@
+{
+  "name": "eslint-plugin-local-sonar",
+  "version": "1.0.0",
+  "description": "Independent in-house SonarQube rules implementation for ESLint",
+  "main": "index.js",
+  "private": true
+}

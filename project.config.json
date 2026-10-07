@@ -1,0 +1,45 @@
+{
+  "$comment": "Single source of truth for per-project identity. Edited by the Worktrees Studio onboarding wizard (or `bun run setup`).",
+  "name": "WTS Scratch",
+  "slug": "wts-scratch",
+  "scheme": "myapp",
+  "version": "1.0.0",
+  "ios": {
+    "bundleIdentifier": "com.example.myapp"
+  },
+  "android": {
+    "package": "com.example.myapp"
+  },
+  "brand": {
+    "primary": "#079789",
+    "splashBackground": "#ffffff"
+  },
+  "gcp": {
+    "projectId": "wts-scratch-4838",
+    "region": "us-central1"
+  },
+  "api": {
+    "url": "http://localhost:8080"
+  },
+  "ota": {
+    "enabled": false,
+    "channel": "staging",
+    "urls": {
+      "staging": "",
+      "production": ""
+    }
+  },
+  "firebase": {
+    "apiKey": "",
+    "appId": "",
+    "webClientId": "",
+    "linkDomain": ""
+  },
+  "onesignal": {
+    "appId": ""
+  },
+  "designRoom": {
+    "studioUrl": "",
+    "projectId": ""
+  }
+}

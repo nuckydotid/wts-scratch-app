@@ -1,0 +1,25 @@
+{
+  "name": "team-server",
+  "version": "1.0.0",
+  "private": true,
+  "type": "module",
+  "description": "Single-tenant team server: office, chat, Kanban/docs sync and the design room for one project. Runs on Cloud Run in the project owner's own GCP project.",
+  "main": "src/index.ts",
+  "scripts": {
+    "dev": "TEAM_DEV_AUTH=1 bun --watch src/index.ts",
+    "start": "bun src/index.ts",
+    "typecheck": "tsc --noEmit",
+    "test": "bun test"
+  },
+  "dependencies": {
+    "@google-cloud/firestore": "^9.3.1",
+    "hono": "^4.13.8",
+    "jose": "^6.2.12"
+  },
+  "devDependencies": {
+    "@types/bun": "latest",
+    "typescript": "~6.0.3",
+    "ws": "^8.18.0",
+    "@types/ws": "^8.5.13"
+  }
+}

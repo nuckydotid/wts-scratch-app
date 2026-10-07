@@ -1,0 +1,49 @@
+{
+  "auto-formatter": {
+    "PostToolUse": [
+      {
+        "matcher": "replace_file_content|write_to_file|multi_replace_file_content",
+        "hooks": [
+          {
+            "type": "command",
+            "command": "bunx prettier --write --ignore-unknown .",
+            "timeout": 15
+          }
+        ]
+      }
+    ]
+  },
+  "safety-guard": {
+    "PreToolUse": [
+      {
+        "matcher": "run_command",
+        "hooks": [
+          {
+            "type": "command",
+            "command": "bun -e 'const input = JSON.parse(process.argv[1] || \"{}\"); const cmd = (input.toolCall?.args?.CommandLine || \"\").trim(); const blocked = [/rm\\s+-rf\\s+[/~*]/, /git\\s+reset\\s+--hard/, /git\\s+push\\s+--force/, /git\\s+clean\\s+-fd/, /cat\\s+\\.env/, /echo.*>.*\\.env/]; for (const b of blocked) { if (b.test(cmd)) { console.log(JSON.stringify({ decision: \"deny\", reason: \"Destructive or unsafe command blocked by safety gate: \" + cmd })); process.exit(0); } } console.log(JSON.stringify({ decision: \"allow\" }));'",
+            "timeout": 5
+          }
+        ]
+      },
+      {
+        "matcher": "write_to_file|replace_file_content|multi_replace_file_content",
+        "hooks": [
+          {
+            "type": "command",
+            "command": "bun -e 'const input = JSON.parse(process.argv[1] || \"{}\"); const file = (input.toolCall?.args?.TargetFile || input.toolCall?.args?.AbsolutePath || \"\"); if (file.includes(\".env\")) { console.log(JSON.stringify({ decision: \"deny\", reason: \"AI Agents are not allowed to directly modify or read .env secret files. Use MCP or ask the user to inject them safely.\" })); process.exit(0); } console.log(JSON.stringify({ decision: \"allow\" }));'",
+            "timeout": 5
+          }
+        ]
+      }
+    ]
+  },
+  "verify-on-stop": {
+    "Stop": [
+      {
+        "type": "command",
+        "command": "bun -e 'console.log(JSON.stringify({ decision: \"allow\" }))'",
+        "timeout": 10
+      }
+    ]
+  }
+}

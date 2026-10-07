@@ -1,0 +1,40 @@
+# Deploy the API to the PRODUCTION Cloud Run service after a merge to `main`.
+# Repository variables (Settings → Variables; `terraform output` prints the values): GCP_WIF_PROVIDER, GCP_DEPLOY_SA_PROD.
+# The GCP_DEPLOY_SA_PROD identity can only be used by workflows running on refs/heads/main, so a pull request or another branch
+# can never deploy here, whatever its workflow file says.
+name: api-prod
+on:
+  push:
+    branches: [main]
+    paths:
+      - "backend/**"
+      - "packages/worktrees-studio-shared-ids/**"
+      - "bun.lock"
+      - "package.json"
+      - "project.config.json"
+  workflow_dispatch:
+permissions:
+  contents: read
+  id-token: write
+concurrency:
+  group: api-prod
+  cancel-in-progress: false
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+    timeout-minutes: 30
+    steps:
+      - uses: actions/checkout@v5
+      - uses: oven-sh/setup-bun@v2
+        with: { bun-version: 1.4.2 }
+      - run: bun install --frozen-lockfile
+      - run: bun run --filter backend test
+      - uses: google-github-actions/auth@v3
+        with:
+          workload_identity_provider: ${{ vars.GCP_WIF_PROVIDER }}
+          service_account: ${{ vars.GCP_DEPLOY_SA_PROD }}
+      - uses: google-github-actions/setup-gcloud@v3
+      - name: Build, push and roll out
+        env:
+          BUILDER: docker
+        run: bash scripts/ship/deploy-service.sh api-prod

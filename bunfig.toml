@@ -1,0 +1,6 @@
+# Expo/Metro expects a flat, hoisted node_modules layout.
+# Bun's isolated linker only links direct deps per workspace and stores the
+# rest under node_modules/.bun, which Metro cannot reliably resolve for
+# workspace packages (e.g. react-native-qrcode-svg imported by worktrees-studio-ds).
+[install]
+linker = "hoisted"
