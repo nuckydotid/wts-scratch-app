@@ -1,6 +1,11 @@
 node_modules/
 .expo/
 dist/
+dist-web/
+# Firebase CLI local state and logs (written by scripts/ship/deploy-design.sh)
+.firebase/
+firebase-debug.log
+firebase-debug.*.log
 web-build/
 uniwind-types.d.ts
 *.orig.*
