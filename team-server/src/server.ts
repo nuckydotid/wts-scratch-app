@@ -7,7 +7,7 @@ import {
 import type { DesignServerMsg } from "./shared/design/protocol.ts";
 import { parseClientMsg } from "./shared/workspace/protocol.ts";
 import type { ServerMsg } from "./shared/workspace/protocol.ts";
-import { createAuthenticator } from "./auth.ts";
+import { createAuthenticator, GITHUB_PREFIX } from "./auth.ts";
 import type { Authenticator } from "./auth.ts";
 import { loadConfig } from "./config.ts";
 import type { Config } from "./config.ts";
@@ -91,6 +91,47 @@ export function createTeamServer(deps: ServerDeps = {}): TeamServer {
       firebaseProjectId: cfg.firebaseProjectId || undefined,
     }),
   );
+  // Who am I here? The join flow asks this before opening a socket, so "not a member" is a clear answer instead of a
+  // closed connection. Every miss costs a GitHub call, so the endpoint has its own budget.
+  const meBudget = new TokenBucket(30, 5);
+  app.get("/me", async (c) => {
+    if (!meBudget.take())
+      return c.json(
+        {
+          error: "rate_limited",
+          message: "Too many sign-in checks. Try again in a moment.",
+        },
+        429,
+      );
+    const bearer = /^Bearer (.+)$/i.exec(
+      c.req.header("authorization") ?? "",
+    )?.[1];
+    if (!bearer)
+      return c.json({ error: "unauthorized", message: "Sign in first." }, 401);
+    try {
+      const id = await auth.verify(bearer);
+      const gh =
+        c.req.header("x-github-token") ??
+        (bearer.startsWith(GITHUB_PREFIX)
+          ? bearer.slice(GITHUB_PREFIX.length)
+          : undefined);
+      const member = await membership.resolve(id, gh);
+      return c.json({
+        uid: id.uid,
+        name: id.name,
+        login: member.login,
+        role: member.role,
+        repo: cfg.repo,
+      });
+    } catch (e) {
+      if (e instanceof AuthzError)
+        return c.json(
+          { error: e.code, message: e.message },
+          e.code === "not_a_member" ? 403 : 401,
+        );
+      return c.json({ error: "unauthorized", message: "Sign-in failed." }, 401);
+    }
+  });
   app.route("/", createHooks({ cfg, design, oidc: deps.oidc }));
   app.notFound((c) => c.json({ error: "not_found" }, 404));
   app.onError((e, c) => {

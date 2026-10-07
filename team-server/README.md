@@ -37,7 +37,7 @@ someone takes effect within minutes. The server holds **no GitHub secret and no 
 
 ## Endpoints
 
-`GET /health` (use this one on Cloud Run: it reserves `/healthz`), `GET /config` (repo, design URL, Firebase project id — nothing secret), `WS /ws` (office),
+`GET /health` (use this one on Cloud Run: it reserves `/healthz`), `GET /me` (who you are and your role, or a clear 401/403: the join flow calls it before opening a socket), `GET /config` (repo, design URL, Firebase project id — nothing secret), `WS /ws` (office),
 `WS /design`, `POST /hooks/github`, `POST /hooks/ci`.
 
 ## Run and test

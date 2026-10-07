@@ -172,6 +172,47 @@ describe("office server", () => {
     );
   });
 
+  test("GET /me answers who you are and your role, or a clear refusal", async () => {
+    const base = url.replace("ws://", "http://").replace("/ws", "");
+    const me = (headers: Record<string, string>) =>
+      fetch(`${base}/me`, { headers });
+    const ok = await me({
+      authorization: "Bearer dev:alice:Alice",
+      "x-github-token": "dev:founder",
+    });
+    assert.equal(ok.status, 200);
+    const body = (await ok.json()) as {
+      uid: string;
+      role: string;
+      repo: string;
+    };
+    assert.deepEqual(
+      { uid: body.uid, role: body.role, repo: body.repo },
+      { uid: "dev-alice", role: "founder", repo: "acme/garden" },
+    );
+    assert.equal((await me({})).status, 401, "no credential");
+    assert.equal(
+      (await me({ authorization: "Bearer nonsense" })).status,
+      401,
+      "bad credential",
+    );
+    const noGithub = await me({ authorization: "Bearer dev:alice:Alice" });
+    assert.equal(noGithub.status, 401);
+    assert.equal(
+      ((await noGithub.json()) as { error: string }).error,
+      "github_required",
+    );
+    const notMember = await me({
+      authorization: "Bearer dev:alice:Alice",
+      "x-github-token": "dev:stranger",
+    });
+    assert.equal(
+      notMember.status,
+      403,
+      "a signed-in non-member is refused, not merely unauthenticated",
+    );
+  });
+
   test("join returns the world with agent NPCs seated at desks", async () => {
     const a = await newBot("alice", "founder").connect();
     const w = a.welcome;
