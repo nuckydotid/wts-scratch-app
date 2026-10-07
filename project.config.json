@@ -39,7 +39,7 @@
     "appId": ""
   },
   "designRoom": {
-    "studioUrl": "",
-    "projectId": ""
+    "studioUrl": "https://wts-scratch-team-834430959053.us-central1.run.app",
+    "projectId": "main"
   }
 }
