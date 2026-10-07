@@ -1,6 +1,6 @@
 {
   "version": 1,
-  "nextCard": 2,
+  "nextCard": 4,
   "nextSprint": 2,
   "sprints": [
     {
@@ -32,6 +32,46 @@
       },
       "createdAt": 1791363425825,
       "updatedAt": 1791371474767
+    },
+    {
+      "id": "T-2",
+      "title": "Card. 2",
+      "description": "Check package.json app version",
+      "status": "doing",
+      "sprintId": "S1",
+      "points": null,
+      "assignee": null,
+      "role": null,
+      "featureId": "",
+      "labels": [],
+      "acceptance": [],
+      "testCaseIds": [],
+      "createdAt": 1791371651155,
+      "updatedAt": 1791371712339
+    },
+    {
+      "id": "T-3",
+      "title": "Add a team welcome doc",
+      "description": "Create docs/team-welcome.md for new teammates: three short sections (What this app is, How we work on cards, Where to ask for help). Use plain language, 2-3 sentences per section. Do not change any other file.",
+      "status": "doing",
+      "sprintId": "S1",
+      "points": null,
+      "assignee": null,
+      "role": null,
+      "featureId": "",
+      "labels": [],
+      "acceptance": [
+        "docs/team-welcome.md exists",
+        "It has exactly three sections: What this app is, How we work on cards, Where to ask for help",
+        "No other file is changed"
+      ],
+      "testCaseIds": [],
+      "createdAt": 1791374755755,
+      "updatedAt": 1791374935476,
+      "handoff": {
+        "agent": "agy",
+        "branch": "card/t-3-add-a-team-welcome-doc"
+      }
     }
   ]
 }
