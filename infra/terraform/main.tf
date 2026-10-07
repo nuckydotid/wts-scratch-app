@@ -341,7 +341,7 @@ resource "google_cloud_run_v2_service" "api" {
         }
       }
 
-      # TCP, not /healthz: the placeholder image of the first apply has no such route. The API itself answers /healthz.
+      # TCP, not HTTP: the placeholder image of the first apply has no health route. The API itself answers /health.
       startup_probe {
         tcp_socket {
           port = 8080

@@ -52,61 +52,118 @@ export function createApp(deps: AppDeps) {
         .orderBy(desc(schema.items.createdAt));
       return c.json({ items: rows });
     })
-    .post("/items", zValidator("json", z.object({ name: z.string().trim().min(1).max(120) })), async (c) => {
-      const { name } = c.req.valid("json");
-      const [row] = await db.insert(schema.items).values({ id: crypto.randomUUID(), ownerUid: c.get("uid"), name }).returning();
-      return c.json({ item: row }, 201);
-    })
+    .post(
+      "/items",
+      zValidator("json", z.object({ name: z.string().trim().min(1).max(120) })),
+      async (c) => {
+        const { name } = c.req.valid("json");
+        const [row] = await db
+          .insert(schema.items)
+          .values({ id: crypto.randomUUID(), ownerUid: c.get("uid"), name })
+          .returning();
+        return c.json({ item: row }, 201);
+      },
+    )
     .delete("/items/:id", async (c) => {
       const res = await db
         .delete(schema.items)
-        .where(and(eq(schema.items.id, c.req.param("id")), eq(schema.items.ownerUid, c.get("uid"))))
+        .where(
+          and(
+            eq(schema.items.id, c.req.param("id")),
+            eq(schema.items.ownerUid, c.get("uid")),
+          ),
+        )
         .returning({ id: schema.items.id });
-      return res.length ? c.json({ ok: true }) : c.json({ error: "not_found" }, 404);
+      return res.length
+        ? c.json({ ok: true })
+        : c.json({ error: "not_found" }, 404);
     })
-    .post("/push/test", async (c) => c.json(await notifier.send([c.get("uid")], "Hello", "Push is working")))
+    .post("/push/test", async (c) =>
+      c.json(await notifier.send([c.get("uid")], "Hello", "Push is working")),
+    )
     .post(
       "/uploads/sign",
       zValidator(
         "json",
         z.object({
           filename: z.string().min(1).max(120),
-          contentType: z.string().regex(/^[a-z]+\/[a-z0-9.+-]+$/i).max(100),
+          contentType: z
+            .string()
+            .regex(/^[a-z]+\/[a-z0-9.+-]+$/i)
+            .max(100),
         }),
       ),
       async (c) => {
         const { filename, contentType } = c.req.valid("json");
         const base = filename.split(/[\\/]/).pop() ?? "file";
-        const safe = base.replace(/[^A-Za-z0-9._-]/g, "_").replace(/\.{2,}/g, ".").replace(/^\./, "_") || "file";
+        const safe =
+          base
+            .replace(/[^A-Za-z0-9._-]/g, "_")
+            .replace(/\.{2,}/g, ".")
+            .replace(/^\./, "_") || "file";
         const key = `uploads/${c.get("uid")}/${crypto.randomUUID()}-${safe}`;
-        return c.json({ key, url: await storage.signedPutUrl(key, contentType, 900), method: "PUT" });
+        return c.json({
+          key,
+          url: await storage.signedPutUrl(key, contentType, 900),
+          method: "PUT",
+        });
       },
     );
 
-  const chat = chatRoutes({ hub: deps.hub, verifier, upgradeWebSocket: deps.upgradeWebSocket });
+  const chat = chatRoutes({
+    hub: deps.hub,
+    verifier,
+    upgradeWebSocket: deps.upgradeWebSocket,
+  });
   const signedUrlTtlSec = deps.signedUrlTtlSec ?? 900;
   const cronTasks: CronTasks = {
-    "chat-retention": async () => ({ deleted: await deps.hub.purgeOlderThan(deps.chatRetentionDays ?? 0) }),
+    "chat-retention": async () => ({
+      deleted: await deps.hub.purgeOlderThan(deps.chatRetentionDays ?? 0),
+    }),
     ...deps.cronTasks,
   };
 
   const origins = deps.corsOrigins ?? [];
   const app = new Hono()
     // Bearer tokens only (no cookies), so credentials are never enabled.
-    .use("*", cors({ origin: origins === "*" ? "*" : (o) => (origins.includes(o) ? o : null), allowHeaders: ["authorization", "content-type"], maxAge: 600 }))
+    .use(
+      "*",
+      cors({
+        origin: origins === "*" ? "*" : (o) => (origins.includes(o) ? o : null),
+        allowHeaders: ["authorization", "content-type"],
+        maxAge: 600,
+      }),
+    )
     .onError((err, c) => {
-      logError(err, { path: new URL(c.req.url).pathname, method: c.req.method });
+      logError(err, {
+        path: new URL(c.req.url).pathname,
+        method: c.req.method,
+      });
       return c.json({ error: "internal" }, 500);
     })
-    .get("/healthz", (c) => c.json({ ok: true, connections: deps.hub.connectionCount }))
+    // `/health` works behind Cloud Run, whose front end reserves `/healthz` on *.run.app (it answers 404 itself).
+    .get("/health", (c) =>
+      c.json({ ok: true, connections: deps.hub.connectionCount }),
+    )
+    .get("/healthz", (c) =>
+      c.json({ ok: true, connections: deps.hub.connectionCount }),
+    )
     .route("/api/v1", api)
     .route("/api/v1/chat", chat.rest)
     .route("/ws/chat", chat.ws)
     .route("/api/assets", assetRoutes({ storage, signedUrlTtlSec }))
-    .route("/internal", internalRoutes({ verifier: deps.schedulerVerifier, tasks: cronTasks }))
+    .route(
+      "/internal",
+      internalRoutes({ verifier: deps.schedulerVerifier, tasks: cronTasks }),
+    )
     .route(
       "/api/ota",
-      otaRoutes({ db, storage, scriptToken: deps.otaScriptToken, signedUrlTtlSec }),
+      otaRoutes({
+        db,
+        storage,
+        scriptToken: deps.otaScriptToken,
+        signedUrlTtlSec,
+      }),
     );
   return app;
 }

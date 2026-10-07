@@ -11,33 +11,33 @@ owner's own GCP project**; there is no shared Studio server. Hono for HTTP, Bun-
 3. The server verifies the Firebase token against Google's public keys (`jose`, no Admin SDK) and asks GitHub, **with the
    user's own token**, what permissions they have on `PROJECT_REPO`:
 
-| GitHub permission | Team role | Office role |
-| --- | --- | --- |
-| admin | `founder` | owner (can edit the office) |
-| maintain | `pm` | admin (can edit the office) |
-| push (write) | `frontend` | member |
-| read / triage / none | refused (`not_a_member`) | |
+| GitHub permission    | Team role                | Office role                 |
+| -------------------- | ------------------------ | --------------------------- |
+| admin                | `founder`                | owner (can edit the office) |
+| maintain             | `pm`                     | admin (can edit the office) |
+| push (write)         | `frontend`               | member                      |
+| read / triage / none | refused (`not_a_member`) |                             |
 
 Collaborators are therefore managed only on GitHub. Results are cached for 5 minutes (30 s for refusals), so removing
 someone takes effect within minutes. The server holds **no GitHub secret and no user database**. Roles refresh on every join.
 
 ## Configuration (environment)
 
-| Variable | Meaning |
-| --- | --- |
-| `PROJECT_REPO` | `owner/name` of the project's repository (required) |
-| `FIREBASE_PROJECT_ID` | Firebase/GCP project that issues sign-in tokens and holds Firestore (required) |
-| `DESIGN_URL` | the design site (Firebase Hosting); its origin and preview channels may open the design socket |
-| `ALLOWED_ORIGINS` | comma list; default is the desktop app's origins |
-| `GITHUB_WEBHOOK_SECRET` | HMAC secret for `/hooks/github` (empty → 503) |
-| `OIDC_AUDIENCE` / `PUBLIC_URL` | audience CI's GitHub OIDC tokens must carry for `/hooks/ci` |
-| `TEAM_STORE` | `firestore` (default when `FIREBASE_PROJECT_ID` is set) or `memory` |
-| `MAX_PLAYERS` | office capacity, default 100 |
-| `TEAM_DEV_AUTH=1` | **local only**: tokens are `dev:<uid>:<name>`, GitHub token is `dev:<role>` |
+| Variable                       | Meaning                                                                                        |
+| ------------------------------ | ---------------------------------------------------------------------------------------------- |
+| `PROJECT_REPO`                 | `owner/name` of the project's repository (required)                                            |
+| `FIREBASE_PROJECT_ID`          | Firebase/GCP project that issues sign-in tokens and holds Firestore (required)                 |
+| `DESIGN_URL`                   | the design site (Firebase Hosting); its origin and preview channels may open the design socket |
+| `ALLOWED_ORIGINS`              | comma list; default is the desktop app's origins                                               |
+| `GITHUB_WEBHOOK_SECRET`        | HMAC secret for `/hooks/github` (empty → 503)                                                  |
+| `OIDC_AUDIENCE` / `PUBLIC_URL` | audience CI's GitHub OIDC tokens must carry for `/hooks/ci`                                    |
+| `TEAM_STORE`                   | `firestore` (default when `FIREBASE_PROJECT_ID` is set) or `memory`                            |
+| `MAX_PLAYERS`                  | office capacity, default 100                                                                   |
+| `TEAM_DEV_AUTH=1`              | **local only**: tokens are `dev:<uid>:<name>`, GitHub token is `dev:<role>`                    |
 
 ## Endpoints
 
-`GET /healthz`, `GET /config` (repo, design URL, Firebase project id — nothing secret), `WS /ws` (office),
+`GET /health` (use this one on Cloud Run: it reserves `/healthz`), `GET /config` (repo, design URL, Firebase project id — nothing secret), `WS /ws` (office),
 `WS /design`, `POST /hooks/github`, `POST /hooks/ci`.
 
 ## Run and test

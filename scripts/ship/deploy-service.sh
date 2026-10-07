@@ -39,6 +39,7 @@ fi
 echo "→ deploying $SERVICE"
 gcloud run deploy "$SERVICE" --project "$PROJECT" --region "$REGION" --image "$IMAGE" --quiet
 URL="$(gcloud run services describe "$SERVICE" --project "$PROJECT" --region "$REGION" --format 'value(status.url)')"
-echo "→ checking $URL/healthz"
-curl -fsS --retry 6 --retry-delay 5 --retry-all-errors "$URL/healthz" >/dev/null || { echo "health check failed: $URL/healthz" >&2; exit 1; }
+# /health, not /healthz: Cloud Run's front end reserves /healthz on *.run.app and answers 404 itself.
+echo "→ checking $URL/health"
+curl -fsS --retry 6 --retry-delay 5 --retry-all-errors "$URL/health" >/dev/null || { echo "health check failed: $URL/health" >&2; exit 1; }
 echo "$URL"
