@@ -1,0 +1,37 @@
+{
+  "version": 1,
+  "nextCard": 2,
+  "nextSprint": 2,
+  "sprints": [
+    {
+      "id": "S1",
+      "name": "Sprint 1",
+      "goal": "",
+      "state": "planned"
+    }
+  ],
+  "cards": [
+    {
+      "id": "T-1",
+      "title": "Card 1",
+      "description": "Getting started",
+      "status": "doing",
+      "sprintId": "S1",
+      "points": null,
+      "assignee": null,
+      "role": null,
+      "featureId": "",
+      "labels": [],
+      "acceptance": [
+        "Show Hello world"
+      ],
+      "testCaseIds": [],
+      "createdAt": 1791363425825,
+      "updatedAt": 1791371421195,
+      "handoff": {
+        "agent": "agy",
+        "branch": "card/t-1-card-1"
+      }
+    }
+  ]
+}
