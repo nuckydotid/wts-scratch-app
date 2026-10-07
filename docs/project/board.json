@@ -26,12 +26,12 @@
         "Show Hello world"
       ],
       "testCaseIds": [],
-      "createdAt": 1791363425825,
-      "updatedAt": 1791371421195,
       "handoff": {
         "agent": "agy",
         "branch": "card/t-1-card-1"
-      }
+      },
+      "createdAt": 1791363425825,
+      "updatedAt": 1791371474767
     }
   ]
 }
